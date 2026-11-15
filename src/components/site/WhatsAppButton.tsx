@@ -18,7 +18,7 @@ export const WhatsAppButton = () => {
       target="_blank"
       rel="noreferrer"
       aria-label="Chat with Silver Wolf Technologies on WhatsApp"
-      className="fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-[#25D366] text-foreground flex items-center justify-center shadow-2xl hover:scale-110 transition-transform animate-pulse-glow"
+      className="hidden md:flex fixed bottom-6 right-6 z-50 h-14 w-14 rounded-full bg-[#25D366] text-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform animate-pulse-glow"
     >
       <MessageCircle className="h-6 w-6" />
     </a>

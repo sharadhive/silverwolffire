@@ -70,6 +70,9 @@ export function getCorePageUrls(): SitemapUrl[] {
     { loc: `${BASE_URL}/locations`,      lastmod: STABLE_CORE_LASTMOD },
     { loc: `${BASE_URL}/contact`,        lastmod: STABLE_CORE_LASTMOD },
     { loc: `${BASE_URL}/careers`,        lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/products/lms`,           lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/products/crm`,           lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/products/hr-management`, lastmod: STABLE_CORE_LASTMOD },
     { loc: `${BASE_URL}/privacy-policy`, lastmod: STABLE_CORE_LASTMOD },
     { loc: `${BASE_URL}/terms`,          lastmod: STABLE_CORE_LASTMOD },
   ];

@@ -71,6 +71,13 @@ assert(
   'International locality is IMPROVE_FIRST'
 );
 
+const lmsPolicy = evaluateUrlPolicy('/products/lms');
+assert(lmsPolicy.decision === 'INDEX', 'LMS product page is INDEX');
+const crmPolicy = evaluateUrlPolicy('/products/crm');
+assert(crmPolicy.decision === 'INDEX', 'CRM product page is INDEX');
+const hrPolicy = evaluateUrlPolicy('/products/hr-management');
+assert(hrPolicy.decision === 'INDEX', 'HR product page is INDEX');
+
 const adminRoute = evaluateUrlPolicy('/admin/dashboard');
 assert(adminRoute.decision === 'NOINDEX', 'Admin route is NOINDEX');
 
@@ -78,11 +85,11 @@ assert(adminRoute.decision === 'NOINDEX', 'Admin route is NOINDEX');
 console.log('\nTest Suite 2: XML Sitemap & Lastmod Stability');
 
 const stats = getSitemapStats();
-assert(stats.corePages === 9, `Core pages count is 9 (got ${stats.corePages})`);
+assert(stats.corePages === 12, `Core pages count is 12 (got ${stats.corePages})`);
 assert(stats.servicePages === 14, `Service pages count is 14 (got ${stats.servicePages})`);
 assert(stats.cityPages === 224, `Indian City pages count is 224 (got ${stats.cityPages})`);
 assert(stats.subCityPages === 60, `Curated locality pages count is 60 (got ${stats.subCityPages})`);
-assert(stats.totalUrls === 307, `Total sitemap indexable URLs is exactly 307 (got ${stats.totalUrls})`);
+assert(stats.totalUrls === 310, `Total sitemap indexable URLs is exactly 310 (got ${stats.totalUrls})`);
 assert(stats.subCityChunks === 1, `Subcity chunks count is 1 (got ${stats.subCityChunks})`);
 
 const coreUrls = getCorePageUrls();

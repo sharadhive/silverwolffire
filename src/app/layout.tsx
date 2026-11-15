@@ -11,6 +11,7 @@ import { Footer } from "@/components/site/Footer";
 import { AdSenseFooterBanner } from "@/components/AdSenseFooterBanner";
 import { AdSenseScript } from "@/components/AdSenseScript";
 import { WhatsAppButton } from "@/components/site/WhatsAppButton";
+import { MobileStickyContact } from "@/components/site/MobileStickyContact";
 import { RouteProgress } from "@/components/site/RouteProgress";
 import { Analytics } from "@vercel/analytics/react";
 import "./globals.css";
@@ -56,6 +57,7 @@ export default function RootLayout({
             <AdSenseFooterBanner />
             <Footer />
             <WhatsAppButton />
+            <MobileStickyContact />
           </div>
           <Toaster />
           <Sonner />

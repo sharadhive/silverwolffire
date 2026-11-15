@@ -55,10 +55,10 @@ export const WhyUs = () => (
           </p>
           <div className="glass rounded-3xl p-7 border border-slate-200/80 shadow-sm">
             <div className="flex items-baseline gap-3 mb-2">
-              <span className="text-4xl md:text-5xl font-bold text-gradient-primary">3.4×</span>
-              <span className="text-sm font-semibold text-slate-700">average ROI within 90 days</span>
+              <span className="text-4xl md:text-5xl font-bold text-gradient-primary">100%</span>
+              <span className="text-sm font-semibold text-slate-700">Code & IP Ownership</span>
             </div>
-            <p className="text-sm text-muted-foreground">Across 50+ active retainers in SaaS, e-commerce, D2C and services.</p>
+            <p className="text-sm text-muted-foreground">Production Next.js, React, and Node.js codebases with zero recurring per-user software licensing overhead.</p>
           </div>
         </div>
 

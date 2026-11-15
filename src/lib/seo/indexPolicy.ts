@@ -146,6 +146,21 @@ export function evaluateUrlPolicy(pathname: string): UrlPolicyResult {
     };
   }
 
+  // Proprietary Platform Product pages (LMS, CRM, HR Management)
+  if (
+    clean === "/products/lms" ||
+    clean === "/products/crm" ||
+    clean === "/products/hr-management"
+  ) {
+    return {
+      decision: "INDEX",
+      isRobotsIndexable: true,
+      isSitemapEligible: true,
+      reason: "Dedicated advanced software platform product page with high commercial intent.",
+      canonicalPath: clean,
+    };
+  }
+
   // Careers listing page
   if (clean === "/careers") {
     return {

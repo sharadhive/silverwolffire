@@ -9,12 +9,16 @@ import { Label } from "@/components/ui/label";
 import {
   ArrowRight, Sparkles, Send, ShieldCheck, Zap, Code2, Smartphone,
   Cpu, Cloud, TrendingUp, Palette, CheckCircle2, Terminal, Activity,
-  Globe, ChevronRight, Layers, ArrowUpRight
+  Globe, ChevronRight, Layers, ArrowUpRight, Phone, MessageCircle,
+  GraduationCap, Users, LayoutDashboard
 } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
 import { use3DTilt } from "@/hooks/use3DTilt";
 import heroBg from "@/assets/hero-bg.jpg";
+import heroIllustration from "@/assets/hero-illustration.jpg";
+import logo from "@/assets/logo.png";
+import { SITE } from "@/data/site";
 
 const enquirySchema = z.object({
   name: z.string().trim().min(2, "Name is too short").max(100),
@@ -31,6 +35,7 @@ const BentoShowcaseCard = ({
   slug,
   span,
   gradient,
+  badge = "Bento Feature",
 }: {
   icon: React.ComponentType<{ className?: string }>;
   title: string;
@@ -38,6 +43,7 @@ const BentoShowcaseCard = ({
   slug: string;
   span: string;
   gradient: string;
+  badge?: string;
 }) => {
   const { cardRef, handleMouseMove, handleMouseLeave } = use3DTilt<HTMLAnchorElement>({
     maxTilt: 8,
@@ -50,7 +56,7 @@ const BentoShowcaseCard = ({
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      href={`/services/${slug}`}
+      href={slug.startsWith("/") ? slug : `/services/${slug}`}
       className={`card-3d group relative rounded-3xl p-7 border border-slate-200/90 bg-white/95 backdrop-blur-xl shadow-lg hover:shadow-2xl transition-all duration-300 block overflow-hidden preserve-3d ${span}`}
     >
       <div className={`absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r ${gradient} opacity-80 group-hover:opacity-100 transition-opacity`} />
@@ -62,7 +68,7 @@ const BentoShowcaseCard = ({
             <Icon className="h-6 w-6 group-hover:rotate-6 transition-transform duration-300" />
           </div>
           <span className="text-[10px] font-extrabold tracking-[0.18em] uppercase text-primary bg-primary/10 border border-primary/20 px-3 py-1 rounded-full translate-z-10">
-            Bento Feature
+            {badge}
           </span>
         </div>
 
@@ -86,6 +92,19 @@ const BentoShowcaseCard = ({
 
 export const Hero = () => {
   const [loading, setLoading] = useState(false);
+  const [formName, setFormName] = useState("");
+  const [formEmail, setFormEmail] = useState("");
+  const [formPhone, setFormPhone] = useState("");
+  const [formService, setFormService] = useState("LMS System");
+  const [formMessage, setFormMessage] = useState("");
+
+  const handleWhatsAppRedirect = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const text = encodeURIComponent(
+      `Hello Silver Wolf Technologies,\nName: ${formName || "Visitor"}\nEmail: ${formEmail || "Not provided"}\nService: ${formService}\nMessage: ${formMessage || "Interested in learning more."}`
+    );
+    window.open(`https://wa.me/${SITE.whatsapp}?text=${text}`, "_blank");
+  };
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -95,7 +114,7 @@ export const Hero = () => {
       name: String(fd.get("name") || ""),
       email: String(fd.get("email") || ""),
       phone: String(fd.get("phone") || ""),
-      service: String(fd.get("service") || "Website Development"),
+      service: String(fd.get("service") || "LMS System"),
       message: String(fd.get("message") || ""),
       honeypot: String(fd.get("hero_url") || ""),
     };
@@ -123,6 +142,10 @@ export const Hero = () => {
 
       toast.success(data.message || "Proposal submitted! Our senior team will connect within 24 hours.");
       formElement.reset();
+      setFormName("");
+      setFormEmail("");
+      setFormPhone("");
+      setFormMessage("");
 
       if (typeof window !== "undefined" && (window as any).gtag) {
         (window as any).gtag("event", "generate_lead", {
@@ -132,7 +155,7 @@ export const Hero = () => {
         });
       }
     } catch {
-      toast.error("Network error. Please try again or email info@silverwolftechnologies.in");
+      toast.error("Network error. Please try again or chat with us directly on WhatsApp.");
     } finally {
       setLoading(false);
     }
@@ -166,42 +189,60 @@ export const Hero = () => {
 
             <div className="space-y-6 relative z-10">
               <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 shadow-2xs">
-                <Sparkles className="h-4 w-4 text-primary animate-pulse" />
+                <img src={logo.src} alt="Silver Wolf Logo" className="h-4 w-4 drop-shadow-xs" />
                 <span className="text-xs font-bold uppercase tracking-wider text-indigo-950">
-                  Engineering & Growth Agency · Murbad, India
+                  Silver Wolf Technologies · India HQ
                 </span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.08]">
                 Web Development, <br />
-                Custom CRM & SEO <br />
-                <span className="text-gradient-primary">Services in India.</span>
+                LMS, Custom CRM & <br />
+                <span className="text-gradient-primary">HR Software in India.</span>
               </h1>
 
               <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal max-w-xl">
-                We engineer production-grade web applications, custom CRM platforms, and revenue-driven SEO campaigns for growing businesses in India and worldwide.
+                We engineer scalable learning management systems (LMS), custom CRM platforms, attendance portals, and high-performance Next.js web applications for ambitious businesses across India and worldwide.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 pt-2">
-                <Button asChild variant="hero" size="xl" className="shadow-lg shadow-indigo-500/25 rounded-full px-8">
+              {/* Direct Action Buttons */}
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <Button asChild variant="hero" size="xl" className="shadow-lg shadow-indigo-500/25 rounded-full px-7">
                   <Link href="/contact" className="flex items-center justify-center gap-2">
                     <span>Start Your Project</span>
                     <ArrowRight className="h-5 w-5" />
                   </Link>
                 </Button>
-                <Button asChild variant="outline" size="xl" className="rounded-full border-slate-300 hover:border-primary/40">
-                  <Link href="/portfolio">Explore Case Studies</Link>
-                </Button>
+
+                {/* Direct WhatsApp Action */}
+                <a
+                  href={`https://wa.me/${SITE.whatsapp}?text=Hello%20Silver%20Wolf%20Technologies,%20I'd%20like%20to%20discuss%20a%20software%20project.`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-600/20 active:scale-95 transition-all"
+                >
+                  <MessageCircle className="h-4.5 w-4.5" />
+                  <span>Chat on WhatsApp</span>
+                </a>
+
+                {/* Direct Phone Call Action */}
+                <a
+                  href={`tel:${SITE.phoneRaw}`}
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-sm border border-slate-300 active:scale-95 transition-all"
+                >
+                  <Phone className="h-4 w-4 text-primary" />
+                  <span>{SITE.phone}</span>
+                </a>
               </div>
             </div>
 
             {/* Stats row inside Bento Card */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-slate-100 relative z-10">
               {[
-                ["3.4×", "Average ROI"],
-                ["200+", "Shipped Builds"],
-                ["10+", "Years Exp"],
-                ["24h", "Fast Response"],
+                ["90+", "Lighthouse Speed"],
+                ["100%", "Code Ownership"],
+                ["Zero", "Recurring Seat Fees"],
+                ["24h", "Direct SLA Response"],
               ].map(([n, l]) => (
                 <div key={l} className="space-y-0.5">
                   <div className="text-2xl sm:text-3xl font-black text-slate-900 font-sora text-gradient-primary">{n}</div>
@@ -216,63 +257,125 @@ export const Hero = () => {
             ref={heroRightRef}
             onMouseMove={handleRightMove}
             onMouseLeave={handleRightLeave}
-            className="lg:col-span-5 card-3d rounded-3xl p-7 md:p-8 bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-xl flex flex-col justify-between relative overflow-hidden preserve-3d"
+            className="lg:col-span-5 card-3d rounded-3xl p-6 md:p-7 bg-white/95 backdrop-blur-2xl border border-slate-200/90 shadow-xl flex flex-col justify-between relative overflow-hidden preserve-3d"
           >
             <div className="card-3d-glare" />
 
-            <div className="relative z-10 space-y-5 preserve-3d">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-100 translate-z-10">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-emerald-500 animate-ping" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-slate-900">Live Engineering Portal</span>
+            <div className="relative z-10 space-y-4 preserve-3d">
+              {/* Product Visual Header */}
+              <div className="relative rounded-2xl overflow-hidden border border-slate-200/80 shadow-inner group">
+                <img
+                  src={heroIllustration.src}
+                  alt="Silver Wolf Technologies Platform Architecture (LMS, CRM, SaaS)"
+                  width={600}
+                  height={320}
+                  className="w-full h-36 md:h-44 object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/20 to-transparent flex items-end p-3.5">
+                  <div className="text-white">
+                    <span className="text-[10px] font-extrabold tracking-widest uppercase bg-primary px-2 py-0.5 rounded-full text-white inline-block mb-1">
+                      Platform Architecture
+                    </span>
+                    <h4 className="text-xs md:text-sm font-bold leading-tight">
+                      Custom LMS, CRM & Enterprise Software Systems
+                    </h4>
+                  </div>
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-primary bg-primary/10 px-2.5 py-1 rounded-full">
-                  Status: 200 OK
-                </span>
               </div>
 
-              {/* Form inside right bento */}
-              <form onSubmit={onSubmit} className="space-y-3.5 translate-z-20">
+              {/* Fast Form */}
+              <form onSubmit={onSubmit} className="space-y-3 translate-z-20">
                 <input type="text" name="hero_url" className="hidden" tabIndex={-1} autoComplete="off" />
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2.5">
                   <div>
                     <Label htmlFor="hero-name" className="text-xs font-semibold text-slate-700">Full Name</Label>
-                    <Input id="hero-name" name="name" placeholder="Alex Rivers" className="mt-1 bg-slate-50 border-slate-200 h-9 text-xs" required />
+                    <Input
+                      id="hero-name"
+                      name="name"
+                      value={formName}
+                      onChange={(e) => setFormName(e.target.value)}
+                      placeholder="Your Name"
+                      className="mt-1 bg-slate-50 border-slate-200 h-8.5 text-xs"
+                      required
+                    />
                   </div>
                   <div>
-                    <Label htmlFor="hero-email" className="text-xs font-semibold text-slate-700">Email</Label>
-                    <Input id="hero-email" name="email" type="email" placeholder="alex@brand.com" className="mt-1 bg-slate-50 border-slate-200 h-9 text-xs" required />
+                    <Label htmlFor="hero-phone" className="text-xs font-semibold text-slate-700">Phone / WhatsApp</Label>
+                    <Input
+                      id="hero-phone"
+                      name="phone"
+                      value={formPhone}
+                      onChange={(e) => setFormPhone(e.target.value)}
+                      placeholder="+91 ..."
+                      className="mt-1 bg-slate-50 border-slate-200 h-8.5 text-xs"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div>
+                    <Label htmlFor="hero-email" className="text-xs font-semibold text-slate-700">Email Address</Label>
+                    <Input
+                      id="hero-email"
+                      name="email"
+                      type="email"
+                      value={formEmail}
+                      onChange={(e) => setFormEmail(e.target.value)}
+                      placeholder="you@company.com"
+                      className="mt-1 bg-slate-50 border-slate-200 h-8.5 text-xs"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="hero-service" className="text-xs font-semibold text-slate-700">Platform Goal</Label>
+                    <select
+                      id="hero-service"
+                      name="service"
+                      value={formService}
+                      onChange={(e) => setFormService(e.target.value)}
+                      className="mt-1 w-full h-8.5 rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs text-slate-900 focus:bg-white"
+                    >
+                      <option value="LMS System">LMS Platform</option>
+                      <option value="CRM Platform">Custom CRM</option>
+                      <option value="HR Management Platform">HR & Attendance Portal</option>
+                      <option value="Website Development">Web Development</option>
+                      <option value="SEO Services">Technical SEO & Growth</option>
+                      <option value="Mobile App Development">Mobile App Development</option>
+                    </select>
                   </div>
                 </div>
 
                 <div>
-                  <Label htmlFor="hero-service" className="text-xs font-semibold text-slate-700">Service Goal</Label>
-                  <select
-                    id="hero-service"
-                    name="service"
-                    className="mt-1 w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs text-slate-900 focus:bg-white"
+                  <Label htmlFor="hero-message" className="text-xs font-semibold text-slate-700">Project Requirements</Label>
+                  <Textarea
+                    id="hero-message"
+                    name="message"
+                    value={formMessage}
+                    onChange={(e) => setFormMessage(e.target.value)}
+                    placeholder="Describe your platform requirements, timeline, or scope..."
+                    rows={2}
+                    className="mt-1 bg-slate-50 border-slate-200 resize-none text-xs"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                  <Button type="submit" variant="hero" size="sm" disabled={loading} className="w-full py-2 text-xs shadow-md shadow-indigo-500/20">
+                    {loading ? "Transmitting..." : <>Send Proposal <Send className="h-3 w-3 ml-1" /></>}
+                  </Button>
+                  <button
+                    type="button"
+                    onClick={handleWhatsAppRedirect}
+                    className="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-colors"
                   >
-                    <option value="Website Development">Website Development</option>
-                    <option value="Mobile App Development">Mobile App Development</option>
-                    <option value="AI Solutions & Automation">AI Solutions & Automation</option>
-                    <option value="Cloud & DevOps">Cloud & DevOps</option>
-                    <option value="Digital Marketing & SEO">Digital Marketing & SEO</option>
-                    <option value="UI/UX Design">UI/UX Design</option>
-                  </select>
+                    <MessageCircle className="h-3.5 w-3.5" />
+                    <span>WhatsApp Brief</span>
+                  </button>
                 </div>
-
-                <div>
-                  <Label htmlFor="hero-message" className="text-xs font-semibold text-slate-700">Project Brief</Label>
-                  <Textarea id="hero-message" name="message" placeholder="Brief outline of your vision..." rows={2} className="mt-1 bg-slate-50 border-slate-200 resize-none text-xs" required />
-                </div>
-
-                <Button type="submit" variant="hero" size="lg" disabled={loading} className="w-full py-2.5 text-xs shadow-md shadow-indigo-500/20">
-                  {loading ? "Transmitting..." : <>Request Free Audit Proposal <Send className="h-3.5 w-3.5 ml-1" /></>}
-                </Button>
               </form>
 
               <div className="pt-2 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 translate-z-10">
-                <span className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-emerald-500" /> Non-Disclosure Agreement</span>
+                <span className="flex items-center gap-1.5"><ShieldCheck className="h-3.5 w-3.5 text-emerald-500" /> Non-Disclosure Protected</span>
                 <span>Response &lt; 24h</span>
               </div>
             </div>
@@ -284,48 +387,52 @@ export const Hero = () => {
         <div className="space-y-6 pt-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
             <div>
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Core Service Verticals</span>
+              <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary">Core Software Verticals</span>
               <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight mt-1">
-                Handcrafted <span className="text-gradient-primary">Bento Services</span>
+                Advanced <span className="text-gradient-primary">Software & Platforms</span>
               </h2>
             </div>
             <p className="text-slate-600 text-sm max-w-md">
-              Each vertical is spearheaded by senior tech leads, product architects, and growth strategists.
+              Engineered with full code ownership, zero recurring per-seat licensing fees, and production scalability.
             </p>
           </div>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-12 gap-6 card-3d-wrapper">
+            <BentoShowcaseCard
+              icon={GraduationCap}
+              title="LMS Platform"
+              short="Custom Learning Management System with quizzes, student portals, certificates, and live class support."
+              slug="/products/lms"
+              span="lg:col-span-4"
+              gradient="from-indigo-500 via-primary to-purple-500"
+              badge="Platform Offering"
+            />
+            <BentoShowcaseCard
+              icon={LayoutDashboard}
+              title="Custom CRM Platform"
+              short="Bespoke sales pipelines, automated WhatsApp lead routing, and customer history without per-seat fees."
+              slug="/products/crm"
+              span="lg:col-span-4"
+              gradient="from-blue-500 via-cyan-500 to-indigo-500"
+              badge="Platform Offering"
+            />
+            <BentoShowcaseCard
+              icon={Users}
+              title="HR & Attendance Portal"
+              short="Unified employee records, real-time geolocation attendance, leave workflows, and payroll-ready exports."
+              slug="/products/hr-management"
+              span="lg:col-span-4"
+              gradient="from-emerald-500 via-teal-500 to-indigo-500"
+              badge="Platform Offering"
+            />
             <BentoShowcaseCard
               icon={Code2}
               title="Web Development"
               short="High-performance web apps built with Next.js, React, and serverless edge computing."
               slug="website-development"
               span="lg:col-span-4"
-              gradient="from-indigo-500 via-primary to-purple-500"
-            />
-            <BentoShowcaseCard
-              icon={Smartphone}
-              title="Mobile Apps"
-              short="Native iOS & Android mobile applications engineered for 60 FPS fluidity and offline resiliency."
-              slug="mobile-app-development"
-              span="lg:col-span-4"
               gradient="from-purple-500 via-pink-500 to-indigo-500"
-            />
-            <BentoShowcaseCard
-              icon={Cpu}
-              title="AI Solutions & Automation"
-              short="Custom LLM integrations, automated agentic pipelines, and predictive machine learning models."
-              slug="saas-development"
-              span="lg:col-span-4"
-              gradient="from-emerald-500 via-teal-500 to-indigo-500"
-            />
-            <BentoShowcaseCard
-              icon={Cloud}
-              title="Custom CRM & Portals"
-              short="Proprietary CRM platforms, attendance management portals, and sales automations without per-seat fees."
-              slug="crm-development"
-              span="lg:col-span-4"
-              gradient="from-blue-500 via-cyan-500 to-indigo-500"
+              badge="Core Service"
             />
             <BentoShowcaseCard
               icon={TrendingUp}
@@ -334,14 +441,16 @@ export const Hero = () => {
               slug="seo-services"
               span="lg:col-span-4"
               gradient="from-indigo-500 via-purple-500 to-emerald-500"
+              badge="Core Service"
             />
             <BentoShowcaseCard
-              icon={Palette}
-              title="UI/UX & Product Design"
-              short="Apple-level design systems, user journeys, micro-interactions, and high-converting visual UI."
-              slug="ui-ux-design"
+              icon={Smartphone}
+              title="Mobile Apps & SaaS"
+              short="Cross-platform iOS & Android mobile applications and cloud-native SaaS systems engineered to scale."
+              slug="mobile-app-development"
               span="lg:col-span-4"
               gradient="from-purple-500 via-indigo-500 to-blue-500"
+              badge="Core Service"
             />
           </div>
         </div>
@@ -350,5 +459,6 @@ export const Hero = () => {
     </section>
   );
 };
+
 
 

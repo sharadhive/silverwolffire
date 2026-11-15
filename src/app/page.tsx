@@ -1,4 +1,5 @@
 import { Hero } from "@/components/site/Hero";
+import { ProductPlatforms } from "@/components/site/ProductPlatforms";
 import { Services } from "@/components/site/Services";
 import { WhyUs } from "@/components/site/WhyUs";
 import { Portfolio } from "@/components/site/Portfolio";
@@ -12,8 +13,8 @@ import type { Metadata } from "next";
 
 // Declared in full and applied with `title.absolute` below.
 // Intent-anchored to primary capabilities for Indian and global decision-makers.
-const HOME_TITLE = 'Web Development, Custom CRM & SEO Services in India | Silver Wolf Technologies';
-const HOME_DESCRIPTION = 'Silver Wolf Technologies engineers high-performance websites, custom CRMs, mobile applications, and technical SEO campaigns for businesses in India and worldwide.';
+const HOME_TITLE = 'Web Development, LMS, Custom CRM & SEO Services in India | Silver Wolf Technologies';
+const HOME_DESCRIPTION = 'Silver Wolf Technologies engineers high-performance websites, custom LMS platforms, tailored CRM systems, and technical SEO campaigns for businesses in India and worldwide.';
 
 export const metadata: Metadata = {
   title: { absolute: HOME_TITLE },
@@ -72,6 +73,7 @@ export default function Home() {
         dangerouslySetInnerHTML={{ __html: safeJsonLd(homepageFaqSchema) }}
       />
       <Hero />
+      <ProductPlatforms />
       <Services />
       <WhyUs />
       <Portfolio />

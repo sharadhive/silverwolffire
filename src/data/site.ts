@@ -1,12 +1,25 @@
+/**
+ * ─── SITE CONFIGURATION & OWNER PLACEHOLDERS ────────────────────────────────
+ * If exact contact or business values need updating, replace the placeholders below:
+ *  - EMAIL_PLACEHOLDER: info@silverwolftechnologies.in
+ *  - PHONE_NUMBER_PLACEHOLDER: +91 98459 53801
+ *  - WHATSAPP_NUMBER_PLACEHOLDER: 919845953801
+ *  - BUSINESS_ADDRESS_PLACEHOLDER: Murbad, Maharashtra 421401, India
+ *  - PRIVACY_CONTACT_PLACEHOLDER: privacy@silverwolftechnologies.in
+ * ─────────────────────────────────────────────────────────────────────────────
+ */
 export const SITE = {
   name: "Silver Wolf Technologies",
   shortName: "Silver Wolf Tech",
   domain: "https://www.silverwolftechnologies.in",
-  email: "info@silverwolftechnologies.in",
-  phone:"+91 98459 53801",
+  email: "info@silverwolftechnologies.in", // EMAIL_PLACEHOLDER
+  privacyEmail: "privacy@silverwolftechnologies.in", // PRIVACY_CONTACT_PLACEHOLDER
+  phone: "+91 98459 53801", // PHONE_NUMBER_PLACEHOLDER
   phoneRaw: "+919845953801",
-  whatsapp: "919845953801",
-  presence: "Remote · Worldwide",
+  whatsapp: "919845953801", // WHATSAPP_NUMBER_PLACEHOLDER
+  whatsappDisplay: "+91 98459 53801",
+  address: "Murbad, Maharashtra 421401, India", // BUSINESS_ADDRESS_PLACEHOLDER
+  presence: "Remote · Worldwide (HQ: Murbad, India)",
   founded: 2015,
   yearsExperience: 10,
   socials: {
@@ -14,6 +27,89 @@ export const SITE = {
     instagram: "https://www.instagram.com/silverwolftechnologies",
   },
 };
+
+export type ProductPlatform = {
+  slug: string;
+  title: string;
+  tagline: string;
+  headline: string;
+  short: string;
+  audience: string;
+  problemsSolved: string;
+  keyFeatures: string[];
+  whySilverWolf: string;
+  image: string;
+  category: string;
+};
+
+export const PRODUCT_PLATFORMS: ProductPlatform[] = [
+  {
+    slug: "lms",
+    title: "LMS Platform",
+    tagline: "Learning Management System",
+    headline: "Custom Learning Management System for Institutes, Academies & Corporate Training",
+    short: "A scalable, high-performance course delivery platform with student dashboards, live sessions, quizzes, progress tracking, and automated certificates.",
+    audience: "Educational institutes, coaching centers, corporate L&D teams, academies, and professional training businesses.",
+    problemsSolved: "Eliminates expensive monthly per-student SaaS fees, fragmented video hosting tools, manual enrollment tracking, and complex payment collection across Indian UPI and global cards.",
+    keyFeatures: [
+      "Modular Course & Curriculum Builder",
+      "Interactive Student Dashboards & Progress Tracking",
+      "Automated Quizzes & Timed Assessments",
+      "Tamper-Proof Digital Certificate Generation",
+      "Support for Live Sessions & Recorded Lectures",
+      "Multi-Instructor & Batch Assignment Tools",
+      "Payment & Enrollment Workflows (UPI, Cards, NetBanking)",
+      "Multilingual Readiness & Mobile-Responsive Player",
+    ],
+    whySilverWolf: "We have architected and deployed production LMS platforms handling thousands of enrolled learners, offline-to-online student onboarding, and fast video streaming without vendor lock-in.",
+    image: "/portfolio-lms.png",
+    category: "EdTech",
+  },
+  {
+    slug: "crm",
+    title: "Custom CRM Platform",
+    tagline: "Customer & Sales Management",
+    headline: "Smart Customer & Sales Management Platform Built for High-Velocity Growth",
+    short: "Streamline customer relationships, automate follow-ups, and visualize sales pipelines without bloated per-seat monthly license fees.",
+    audience: "Service businesses, agencies, sales teams, consultancies, real estate firms, and growing SMEs.",
+    problemsSolved: "Replaces rigid, overpriced software (like Salesforce or HubSpot) that costs thousands per seat, eliminates lost leads, and automates WhatsApp and email communication workflows.",
+    keyFeatures: [
+      "Automated Lead Ingestion & Smart Routing",
+      "Visual Drag-and-Drop Kanban Sales Pipeline",
+      "Automated WhatsApp & Email Follow-up Triggers",
+      "Client Interaction History & Timestamped Notes",
+      "Quotation & Contract Workflow Support",
+      "Role-Based Team Assignment & Permissions",
+      "Real-Time Sales Conversion & Revenue Dashboard",
+      "Zero Recurring Per-User Software Licensing Fees",
+    ],
+    whySilverWolf: "We build bespoke CRM systems tailored to your exact operational stages, ensuring 100% code ownership, zero license overhead, and direct integration with your existing marketing funnels.",
+    image: "/portfolio-crm.png",
+    category: "Sales Tech",
+  },
+  {
+    slug: "hr-management",
+    title: "HR & Attendance Platform",
+    tagline: "Operations & Workforce",
+    headline: "Unified Employee Operations, Attendance Tracking & Leave Management",
+    short: "Automate daily employee check-ins, leave approvals, recruitment pipelines, and payroll-ready reporting in one intuitive portal.",
+    audience: "Growing companies, tech agencies, SMEs, manufacturing, and distributed teams with 15 to 500+ employees.",
+    problemsSolved: "Replaces error-prone manual spreadsheets, biometric hardware failures, lost employee documents, and stressful month-end payroll reconciliation.",
+    keyFeatures: [
+      "Real-Time Geolocation / IP-Based Attendance Tracking",
+      "Automated Multi-Tier Leave Request & Approval Chains",
+      "Centralized Employee Master Records & Document Vault",
+      "Payroll-Ready Working Hours & Overtime Export",
+      "Recruitment Workflow & Candidate Tracking",
+      "Digital Onboarding Checklists & Task Delegation",
+      "Company-Wide Announcements & Digital Notice Board",
+      "Granular Roles for HR Admins, Managers & Team Members",
+    ],
+    whySilverWolf: "We engineered attendance and HR platforms managing 500+ daily check-ins with shift planning, biometric sync, and instant Excel/CSV payroll exports for Indian and global teams.",
+    image: "/portfolio-hr.png",
+    category: "Operations",
+  },
+];
 
 export type TeamMember = {
   name: string;
