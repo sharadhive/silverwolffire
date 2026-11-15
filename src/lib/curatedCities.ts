@@ -29,7 +29,7 @@
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-import { CITIES, citySlug } from "@/data/site";
+import { CITIES, citySlug } from "../data/site";
 
 /**
  * City slugs whose locality pages carry real, hand-written content and are
@@ -41,16 +41,15 @@ export const CURATED_CITIES: ReadonlySet<string> = new Set([
 ]);
 
 /**
- * Master switch: index EVERY locality page (all 22 cities, ~6,076 pages).
+ * Master switch: selective, quality-gated indexing enabled.
  *
- *   true  → every locality page is `index, follow` and listed in the sitemap.
- *   false → only CURATED_CITIES localities are indexable; the rest are
- *           `noindex, follow` and left out of the sitemap.
- *
- * Both the robots meta tag (lib/serviceMetadata.ts) and the sitemap
- * (lib/sitemapUtils.ts) read isLocalityIndexable(), so they always agree.
+ *   false → only CURATED_CITIES localities with real, service-specific content
+ *           are indexable and included in the sitemap. The rest are served as
+ *           HTTP 200 with `noindex, follow` and kept out of the sitemap.
+ *           This protects link equity while eliminating 6,000+ low-value doorway
+ *           pages that trigger Google's "Crawled - currently not indexed" penalty.
  */
-export const INDEX_ALL_LOCALITIES = true;
+export const INDEX_ALL_LOCALITIES = false;
 
 /** Does this city's locality pages have real content behind them? */
 export function isCuratedCity(cityOrSlug: string): boolean {
@@ -63,13 +62,15 @@ export function isCuratedCity(cityOrSlug: string): boolean {
 /**
  * Should this locality page be indexed?
  *
- * City-level pages (/services/{slug}/{city}) are always indexable — there are
- * only 308 of them and they carry the service copy plus a real FAQ set.
- * Locality pages are indexable only where the city is curated.
+ * City-level pages (/services/{slug}/{city}) are evaluated separately.
+ * Locality pages are indexable only where the city is curated AND the service
+ * matches the hand-written content (currently "website-development").
  */
-export function isLocalityIndexable(citySlugParam: string): boolean {
+export function isLocalityIndexable(citySlugParam: string, serviceSlugParam: string = "website-development"): boolean {
   if (INDEX_ALL_LOCALITIES) return true;
-  return CURATED_CITIES.has(citySlugParam.toLowerCase());
+  const isCurated = CURATED_CITIES.has(citySlugParam.toLowerCase());
+  const isWebDev = serviceSlugParam.toLowerCase() === "website-development";
+  return isCurated && isWebDev;
 }
 
 /** Cities still awaiting hand-written locality content. */

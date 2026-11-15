@@ -399,54 +399,8 @@ export const CareersPage = () => {
     { name: "Careers", href: "/careers" }
   ];
 
-  // ── JobPosting JSON-LD Schema for Google Jobs & AI Engines ──
-  const hiringTypeToEmploymentType: Record<HiringType, string> = {
-    "Internship": "INTERN",
-    "Full-Time": "FULL_TIME",
-    "Part-Time": "PART_TIME",
-    "Trainer": "CONTRACTOR",
-  };
-
-  const jobPostingSchemas = jobs.map((job) => ({
-    "@context": "https://schema.org",
-    "@type": "JobPosting",
-    title: job.title,
-    description: `<p>${job.description}</p><p><strong>Duration:</strong> ${job.duration}</p><p><strong>Tech Stack:</strong> ${job.stack.join(", ")}</p>`,
-    datePosted: new Date().toISOString().split("T")[0],
-    validThrough: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-    employmentType: job.hiringTypes.map((ht) => hiringTypeToEmploymentType[ht]),
-    hiringOrganization: {
-      "@type": "Organization",
-      name: SITE.name,
-      sameAs: SITE.domain,
-      logo: `${SITE.domain}/favicon.png`,
-    },
-    jobLocation: {
-      "@type": "Place",
-      address: {
-        "@type": "PostalAddress",
-        addressLocality: "Murbad",
-        addressRegion: "Maharashtra",
-        addressCountry: "IN",
-      },
-    },
-    jobLocationType: "TELECOMMUTE",
-    applicantLocationRequirements: {
-      "@type": "Country",
-      name: "India",
-    },
-    industry: job.category,
-    skills: job.stack.join(", "),
-  }));
-
   return (
     <div className="relative min-h-screen bg-background text-foreground">
-      {/* JobPosting Schema for Google Jobs */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jobPostingSchemas) }}
-      />
-
       {/* Decorative Grid Overlay & Ambient Blobs */}
       <div className="absolute inset-0 grid-bg pointer-events-none z-0" />
       <div className="absolute top-24 left-[10%] w-[350px] h-[350px] bg-primary/10 rounded-full blur-[120px] pointer-events-none z-0" />

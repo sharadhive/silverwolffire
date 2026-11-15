@@ -1,21 +1,8 @@
-'use client';
-
-import { useState } from "react";
 import Link from "next/link";
 import { CITIES, SUB_CITIES, SERVICES, citySlug } from "@/data/site";
-import { ArrowRight, ChevronDown, ChevronUp, MapPin } from "lucide-react";
+import { ArrowRight, ChevronDown, MapPin } from "lucide-react";
 
 export default function LocationsClient() {
-  const [expandedCities, setExpandedCities] = useState<Set<string>>(new Set());
-
-  const toggleCity = (city: string) => {
-    setExpandedCities((prev) => {
-      const next = new Set(prev);
-      if (next.has(city)) next.delete(city);
-      else next.add(city);
-      return next;
-    });
-  };
 
   return (
     <section className="pb-24">
@@ -23,7 +10,6 @@ export default function LocationsClient() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {CITIES.map((c) => {
             const subs = SUB_CITIES[c] ?? [];
-            const isExpanded = expandedCities.has(c);
 
             return (
               <div key={c} className="glass rounded-2xl p-6">
@@ -55,37 +41,32 @@ export default function LocationsClient() {
                   ))}
                 </ul>
 
-                {/* Sub-cities / localities — shown as area tags */}
+                {/* Sub-cities / localities — rendered as crawler-accessible HTML details/summary */}
                 {subs.length > 0 && (
-                  <>
-                    <button
-                      onClick={() => toggleCity(c)}
-                      className="text-xs font-semibold text-primary hover:text-primary/80 inline-flex items-center gap-1 mb-3 transition-colors"
-                    >
-                      {isExpanded ? "Hide" : "Show"} {subs.length} localities
-                      {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                    </button>
+                  <details className="group">
+                    <summary className="cursor-pointer text-xs font-semibold text-primary hover:text-primary/80 inline-flex items-center gap-1 mb-3 transition-colors list-none select-none">
+                      <span>Explore {subs.length} localities</span>
+                      <ChevronDown className="h-3 w-3 group-open:rotate-180 transition-transform" />
+                    </summary>
 
-                    {isExpanded && (
-                      <div className="flex flex-wrap gap-1.5 animate-fade-up">
-                        {subs.map((sc) => (
-                          <Link
-                            key={sc}
-                            href={`/services/${SERVICES[0].slug}/${citySlug(c)}/${citySlug(sc)}`}
-                            className="text-xs text-muted-foreground hover:text-foreground bg-secondary/50 hover:bg-primary/10 rounded-full px-2.5 py-1 transition-colors"
-                          >
-                            {sc}
-                          </Link>
-                        ))}
+                    <div className="flex flex-wrap gap-1.5 animate-fade-up mt-1">
+                      {subs.map((sc) => (
                         <Link
-                          href={`/services/${SERVICES[0].slug}/${citySlug(c)}`}
-                          className="text-xs text-primary font-medium inline-flex items-center gap-1 px-2.5 py-1 hover:text-primary/80 transition-colors"
+                          key={sc}
+                          href={`/services/${SERVICES[0].slug}/${citySlug(c)}/${citySlug(sc)}`}
+                          className="text-xs text-muted-foreground hover:text-foreground bg-secondary/50 hover:bg-primary/10 rounded-full px-2.5 py-1 transition-colors"
                         >
-                          View all services → <ArrowRight className="h-3 w-3" />
+                          {sc}
                         </Link>
-                      </div>
-                    )}
-                  </>
+                      ))}
+                      <Link
+                        href={`/services/${SERVICES[0].slug}/${citySlug(c)}`}
+                        className="text-xs text-primary font-medium inline-flex items-center gap-1 px-2.5 py-1 hover:text-primary/80 transition-colors"
+                      >
+                        View all services → <ArrowRight className="h-3 w-3" />
+                      </Link>
+                    </div>
+                  </details>
                 )}
               </div>
             );

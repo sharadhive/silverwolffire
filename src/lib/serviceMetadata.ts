@@ -4,16 +4,16 @@ import { SERVICES, cityFromSlug, subCityFromSlug, SITE, citySlug } from "@/data/
 import { getAreaData } from "@/lib/locationData";
 import { isLocalityIndexable } from "@/lib/curatedCities";
 
-// ─── City-level title pool (8 rotating patterns) ─────────────────────────────
+// ─── City-level title pool (intent-first, no unverified superlatives) ───────
 const CITY_TITLE_POOL = [
-  (svc: string, city: string) => `Best ${svc} Agency in ${city}`,
-  (svc: string, city: string) => `Top ${svc} Company in ${city}`,
-  (svc: string, city: string) => `Expert ${svc} Services in ${city}`,
-  (svc: string, city: string) => `${svc} Specialists Serving ${city}`,
-  (svc: string, city: string) => `Professional ${svc} in ${city}`,
-  (svc: string, city: string) => `${city}'s Trusted ${svc} Team`,
-  (svc: string, city: string) => `Custom ${svc} for ${city} Businesses`,
+  (svc: string, city: string) => `${svc} Company in ${city}`,
+  (svc: string, city: string) => `${svc} Agency Serving ${city}`,
+  (svc: string, city: string) => `Custom ${svc} in ${city}`,
+  (svc: string, city: string) => `${svc} Services in ${city}`,
+  (svc: string, city: string) => `${svc} Developers in ${city}`,
+  (svc: string, city: string) => `${svc} for ${city} Businesses`,
   (svc: string, city: string) => `${svc} Solutions in ${city}`,
+  (svc: string, city: string) => `${svc} Specialists Serving ${city}`,
 ];
 
 function simpleHash(a: string, b: string): number {
@@ -62,7 +62,7 @@ export function generateServiceMetadata(slug: string, citySlugParam?: string, su
     // Use the hash-varied title from contentGenerator when available
     titleBase = areaData?.metaTitle
       ? areaData.metaTitle
-      : `Best ${service.title} in ${subCity}, ${city}`;
+      : `${service.title} in ${subCity}, ${city}`;
   } else if (city) {
     const h = simpleHash(city, service.title);
     titleBase = CITY_TITLE_POOL[h % CITY_TITLE_POOL.length](service.title, city);
@@ -127,12 +127,12 @@ export function generateServiceMetadata(slug: string, citySlugParam?: string, su
   const canonicalUrl = `${SITE.domain}${canonicalPath}`;
 
   /**
-   * All service, city and locality pages are indexable. isLocalityIndexable()
-   * returns true for every city while INDEX_ALL_LOCALITIES is on
-   * (lib/curatedCities.ts).
+   * Evaluates indexing eligibility based on curated data presence.
+   * Curated locality pages are indexed; template fallback localities receive
+   * `noindex, follow` to protect overall domain crawl health.
    */
   const indexable =
-    !subCity || (citySlugParam ? isLocalityIndexable(citySlugParam) : false);
+    !subCity || (citySlugParam ? isLocalityIndexable(citySlugParam, service.slug) : false);
 
   return {
     title: {

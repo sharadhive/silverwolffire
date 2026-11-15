@@ -6,6 +6,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { serviceSubCityParams } from "@/lib/staticParams";
 import LocationSeoBlock from "@/components/LocationSeoBlock";
 import { generateLocationFaqs } from "@/lib/locationFaqs";
+import { safeJsonLd } from "@/lib/jsonLd";
 
 /**
  * Pre-render service × city × locality pages at build time.
@@ -85,7 +86,7 @@ export default function ServiceSubCityPage({ params }: { params: { slug: string;
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(serviceSchema) }}
       />
       <ServiceDetailClient slug={params.slug} citySlugParam={params.city} subCitySlugParam={params.subcity} />
       {/*

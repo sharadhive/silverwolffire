@@ -21,25 +21,56 @@ type Props = { compact?: boolean; presetService?: string };
 export const Contact = ({ compact = false, presetService }: Props) => {
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const parsed = schema.safeParse({
-      name: fd.get("name"),
-      email: fd.get("email"),
-      phone: fd.get("phone"),
-      message: fd.get("message"),
-    });
+    const formElement = e.currentTarget;
+    const fd = new FormData(formElement);
+    const payload = {
+      name: String(fd.get("name") || ""),
+      email: String(fd.get("email") || ""),
+      phone: String(fd.get("phone") || ""),
+      service: presetService || "General Inquiry",
+      message: String(fd.get("message") || ""),
+      honeypot: String(fd.get("website_url") || ""),
+    };
+
+    const parsed = schema.safeParse(payload);
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
     }
+
     setLoading(true);
-    setTimeout(() => {
-      toast.success("Thanks! Our team will reach out within 24 hours.");
-      (e.target as HTMLFormElement).reset();
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        toast.error(data.error || "Submission failed. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      toast.success(data.message || "Thanks! Our senior team will reach out within 24 hours.");
+      formElement.reset();
+
+      // Dispatch analytics event safely only upon verified server acceptance
+      if (typeof window !== "undefined" && (window as any).gtag) {
+        (window as any).gtag("event", "generate_lead", {
+          event_category: "Engagement",
+          event_label: payload.service,
+          lead_id: data.leadId,
+        });
+      }
+    } catch {
+      toast.error("Network error. Please try again or email us directly at info@silverwolftechnologies.in");
+    } finally {
       setLoading(false);
-    }, 700);
+    }
   };
 
   return (
@@ -87,6 +118,8 @@ export const Contact = ({ compact = false, presetService }: Props) => {
           </div>
 
           <form onSubmit={onSubmit} className="lg:col-span-3 glass rounded-2xl p-8 space-y-5 animate-fade-up">
+            {/* Anti-spam honeypot */}
+            <input type="text" name="website_url" className="hidden" tabIndex={-1} autoComplete="off" />
             <div className="grid sm:grid-cols-2 gap-5">
               <div>
                 <Label htmlFor="name">Name</Label>

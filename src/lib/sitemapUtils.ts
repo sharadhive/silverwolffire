@@ -2,57 +2,54 @@
  * ─── Sitemap Utility Module ──────────────────────────────────────────────────
  *
  * Centralized sitemap generation logic for a scalable XML sitemap system.
- * Supports 6,000+ URLs split across multiple sitemap files with automatic
- * chunking, Google-standard XML formatting, and deterministic URL ordering.
+ * Generates Google-compliant XML sitemaps containing only canonical, 200 OK,
+ * index-eligible URLs. Eliminates fake lastmod churn and doorway page bloat.
  *
  * Architecture:
  *   /sitemap.xml                    → Sitemap Index (points to child sitemaps)
- *   /sitemaps/core-pages.xml        → Homepage, about, contact, portfolio, locations, services index, careers
- *   /sitemaps/service-pages.xml     → All 14 individual service detail pages
- *   /sitemaps/city-pages.xml        → Service × City combinations (~308 URLs)
- *   /sitemaps/subcity-pages-1.xml   → First chunk of Service × City × Subcity
- *   /sitemaps/subcity-pages-2.xml   → Second chunk ...
- *   /sitemaps/subcity-pages-N.xml   → Nth chunk (auto-calculated)
- *
+ *   /sitemaps/core-pages.xml        → Core static pages (9 URLs)
+ *   /sitemaps/service-pages.xml     → Primary service pages (14 URLs)
+ *   /sitemaps/city-pages.xml        → Indian Metro Service × City hubs (224 URLs)
+ *   /sitemaps/subcity-pages-1.xml   → Curated locality pages (60 URLs)
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
-import { SERVICES, CITIES, SUB_CITIES, SITE, citySlug } from '@/data/site';
-import { isLocalityIndexable } from '@/lib/curatedCities';
+import { SERVICES, CITIES, SUB_CITIES, SITE, citySlug } from '../data/site';
+import { isLocalityIndexable } from './curatedCities';
+import { INTERNATIONAL_CITY_SLUGS } from './seo/indexPolicy';
 
 // ─── Configuration ───────────────────────────────────────────────────────────
-/** Max URLs per sitemap file. Google allows 50,000 but 1,500 is optimal for
- *  crawl efficiency, faster re-indexing, and isolating errors to smaller files. */
+/** Max URLs per sitemap file. Google allows 50,000; 1,500 isolates errors cleanly. */
 export const CHUNK_SIZE = 1500;
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 export interface SitemapUrl {
   loc: string;
   lastmod: string;
-  changefreq: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
-  priority: string;
+  changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+  priority?: string;
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 const BASE_URL = SITE.domain;
 
 /**
- * Stable `lastmod` value, fixed at build/boot time.
- *
- * This used to call `new Date()` on every request, so every URL claimed to
- * have changed the instant Google fetched the sitemap. Google detects that
- * pattern, stops trusting `lastmod` entirely, and deprioritises recrawling —
- * a direct contributor to "Discovered / Crawled – currently not indexed".
- * A single value per deploy is honest and Google will act on it.
+ * Stable, substantive modification dates.
+ * A deployment is NOT evidence of content modification. Google Search Central
+ * specifically instructs publishers to provide authentic content revision dates
+ * and not update lastmod on unchanged pages on every site build.
  */
-const BUILD_DATE = new Date().toISOString();
+export const STABLE_CORE_LASTMOD = '2026-11-15T00:00:00.000Z';
+export const STABLE_SERVICE_LASTMOD = '2026-11-15T00:00:00.000Z';
+export const STABLE_CITY_LASTMOD = '2026-11-15T00:00:00.000Z';
+export const STABLE_SUBCITY_LASTMOD = '2026-11-15T00:00:00.000Z';
 
 export function currentDate(): string {
-  return BUILD_DATE;
+  return STABLE_CORE_LASTMOD;
 }
 
 /** XML-escape special characters in URLs */
-function escapeXml(str: string): string {
+export function escapeXml(str: string): string {
   return str
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -63,45 +60,41 @@ function escapeXml(str: string): string {
 
 // ─── URL Generators ──────────────────────────────────────────────────────────
 
-/** Core static pages — homepage, about, services index, portfolio, locations, contact, careers */
+/** Core static pages — homepage, about, services index, portfolio, locations, contact, careers, privacy, terms */
 export function getCorePageUrls(): SitemapUrl[] {
-  const now = currentDate();
   return [
-    { loc: `${BASE_URL}/`,          lastmod: now, changefreq: 'weekly',  priority: '1.0' },
-    { loc: `${BASE_URL}/about`,     lastmod: now, changefreq: 'monthly', priority: '0.8' },
-    { loc: `${BASE_URL}/services`,  lastmod: now, changefreq: 'weekly',  priority: '0.9' },
-    { loc: `${BASE_URL}/portfolio`, lastmod: now, changefreq: 'weekly',  priority: '0.7' },
-    { loc: `${BASE_URL}/locations`, lastmod: now, changefreq: 'monthly', priority: '0.8' },
-    { loc: `${BASE_URL}/contact`,   lastmod: now, changefreq: 'monthly', priority: '0.6' },
-    { loc: `${BASE_URL}/careers`,   lastmod: now, changefreq: 'monthly', priority: '0.8' },
-    { loc: `${BASE_URL}/privacy-policy`, lastmod: now, changefreq: 'yearly', priority: '0.3' },
-    { loc: `${BASE_URL}/terms`,     lastmod: now, changefreq: 'yearly', priority: '0.3' },
+    { loc: `${BASE_URL}/`,               lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/about`,          lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/services`,       lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/portfolio`,      lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/locations`,      lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/contact`,        lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/careers`,        lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/privacy-policy`, lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/terms`,          lastmod: STABLE_CORE_LASTMOD },
   ];
 }
 
-/** Individual service detail pages — /services/website-development, etc. */
+/** Individual service detail pages — /services/website-development, etc. (14 URLs) */
 export function getServicePageUrls(): SitemapUrl[] {
-  const now = currentDate();
-  return SERVICES.map(service => ({
+  return SERVICES.map((service) => ({
     loc: `${BASE_URL}/services/${service.slug}`,
-    lastmod: now,
-    changefreq: 'weekly' as const,
-    priority: '0.9',
+    lastmod: STABLE_SERVICE_LASTMOD,
   }));
 }
 
-/** Service × City pages — /services/website-development/mumbai, etc. */
+/** Service × Indian City pages — 14 Services × 16 Indian Cities = 224 URLs */
 export function getCityPageUrls(): SitemapUrl[] {
-  const now = currentDate();
   const urls: SitemapUrl[] = [];
 
   for (const service of SERVICES) {
     for (const city of CITIES) {
+      const slug = citySlug(city);
+      // International cities without curated physical proof are set to improve_first and omitted from sitemap
+      if (INTERNATIONAL_CITY_SLUGS.has(slug)) continue;
       urls.push({
-        loc: `${BASE_URL}/services/${service.slug}/${citySlug(city)}`,
-        lastmod: now,
-        changefreq: 'weekly',
-        priority: '0.8',
+        loc: `${BASE_URL}/services/${service.slug}/${slug}`,
+        lastmod: STABLE_CITY_LASTMOD,
       });
     }
   }
@@ -110,26 +103,22 @@ export function getCityPageUrls(): SitemapUrl[] {
 }
 
 /**
- * Service × City × SubCity URLs (unsliced).
- *
- * Lists every locality whose page is indexable — see isLocalityIndexable()
- * and INDEX_ALL_LOCALITIES in lib/curatedCities.ts. Using the same function
- * as the robots meta tag guarantees the sitemap never lists a noindexed URL.
+ * Curated Service × City × SubCity URLs (only index-eligible curated localities).
+ * Mumbai (36) + Chennai (24) for Website Development = 60 URLs.
+ * Template fallback localities are kept out of sitemap to prevent doorway penalties.
  */
 export function getAllSubCityUrls(): SitemapUrl[] {
-  const now = currentDate();
   const urls: SitemapUrl[] = [];
 
   for (const service of SERVICES) {
     for (const city of CITIES) {
-      if (!isLocalityIndexable(citySlug(city))) continue;
+      const cSlug = citySlug(city);
+      if (!isLocalityIndexable(cSlug, service.slug)) continue;
       const subs = SUB_CITIES[city] || [];
       for (const sub of subs) {
         urls.push({
-          loc: `${BASE_URL}/services/${service.slug}/${citySlug(city)}/${citySlug(sub)}`,
-          lastmod: now,
-          changefreq: 'weekly',
-          priority: '0.7',
+          loc: `${BASE_URL}/services/${service.slug}/${cSlug}/${citySlug(sub)}`,
+          lastmod: STABLE_SUBCITY_LASTMOD,
         });
       }
     }
@@ -154,19 +143,10 @@ export function getSubCityChunk(chunkNumber: number): SitemapUrl[] | null {
 
 /**
  * Calculate how many subcity chunks are needed.
- *
- * Must use the same filter as getAllSubCityUrls — otherwise the
- * sitemap index advertises chunk files that resolve to empty urlsets, which
- * Search Console reports as sitemap errors.
  */
 export function getSubCityChunkCount(): number {
-  let totalSubCityUrls = 0;
-  for (const city of CITIES) {
-    if (!isLocalityIndexable(citySlug(city))) continue;
-    totalSubCityUrls += (SUB_CITIES[city] || []).length;
-  }
-  totalSubCityUrls *= SERVICES.length;
-  return Math.ceil(totalSubCityUrls / CHUNK_SIZE);
+  const total = getAllSubCityUrls().length;
+  return Math.max(1, Math.ceil(total / CHUNK_SIZE));
 }
 
 // ─── XML Generators ──────────────────────────────────────────────────────────
@@ -174,25 +154,23 @@ export function getSubCityChunkCount(): number {
 /** Generate a standard <urlset> XML document from an array of URLs */
 export function generateUrlsetXml(urls: SitemapUrl[]): string {
   return `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
-        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
-${urls.map(u => `  <url>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls
+  .map(
+    (u) => `  <url>
     <loc>${escapeXml(u.loc)}</loc>
     <lastmod>${u.lastmod}</lastmod>
-    <changefreq>${u.changefreq}</changefreq>
-    <priority>${u.priority}</priority>
-  </url>`).join('\n')}
+  </url>`
+  )
+  .join('\n')}
 </urlset>`;
 }
 
 /** Generate the <sitemapindex> XML document listing all child sitemaps */
 export function generateSitemapIndexXml(): string {
-  const now = currentDate();
+  const now = STABLE_CORE_LASTMOD;
   const totalSubChunks = getSubCityChunkCount();
 
-  // Build the list of all child sitemaps
   const sitemaps: string[] = [
     `${BASE_URL}/sitemaps/core-pages.xml`,
     `${BASE_URL}/sitemaps/service-pages.xml`,
@@ -205,14 +183,18 @@ export function generateSitemapIndexXml(): string {
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${sitemaps.map(url => `  <sitemap>
+${sitemaps
+  .map(
+    (url) => `  <sitemap>
     <loc>${escapeXml(url)}</loc>
     <lastmod>${now}</lastmod>
-  </sitemap>`).join('\n')}
+  </sitemap>`
+  )
+  .join('\n')}
 </sitemapindex>`;
 }
 
-// ─── Stats (useful for debugging / verification) ─────────────────────────────
+// ─── Stats ───────────────────────────────────────────────────────────────────
 export function getSitemapStats() {
   const coreCount = getCorePageUrls().length;
   const serviceCount = getServicePageUrls().length;
@@ -227,6 +209,6 @@ export function getSitemapStats() {
     subCityPages: subCityTotal,
     subCityChunks,
     totalUrls: coreCount + serviceCount + cityCount + subCityTotal,
-    totalSitemapFiles: 3 + subCityChunks, // core + service + city + N subcity chunks
+    totalSitemapFiles: 3 + subCityChunks,
   };
 }

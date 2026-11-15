@@ -25,6 +25,7 @@
 
 import { SITE } from "@/data/site";
 import type { FAQ } from "@/data/locations/types";
+import { safeJsonLd } from "@/lib/jsonLd";
 
 interface Props {
   serviceTitle: string;
@@ -71,29 +72,11 @@ export default function LocationSeoBlock({
     })),
   };
 
-  // ── 3. Speakable — voice assistants and read-aloud surfaces ───────────────
-  const speakableSchema = {
-    "@context": "https://schema.org",
-    "@type": "WebPage",
-    "@id": pageUrl,
-    url: pageUrl,
-    name: `${serviceTitle} in ${place} | ${SITE.name}`,
-    speakable: {
-      "@type": "SpeakableSpecification",
-      cssSelector: ["h1", ".aeo-answer"],
-    },
-    isPartOf: { "@type": "WebSite", "@id": `${SITE.domain}/#website` },
-  };
-
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(speakableSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(faqSchema) }}
       />
 
       <section

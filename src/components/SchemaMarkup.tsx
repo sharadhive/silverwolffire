@@ -1,37 +1,65 @@
-'use client'
+'use client';
+
+import { safeJsonLd } from "@/lib/jsonLd";
+export { safeJsonLd };
 
 interface SchemaProps {
-  type: 'organization' | 'localBusiness' | 'service' | 'breadcrumb' | 'faq' | 'website'
-  data?: any
+  type: 'organization' | 'localBusiness' | 'service' | 'breadcrumb' | 'faq' | 'website';
+  data?: any;
 }
 
 export default function SchemaMarkup({ type, data }: SchemaProps) {
   const schemas: Record<string, object> = {
     organization: {
       "@context": "https://schema.org",
-      "@type": "Organization",
+      "@type": ["Organization", "ProfessionalService"],
       "@id": "https://www.silverwolftechnologies.in/#organization",
       "name": "Silver Wolf Technologies",
+      "alternateName": "Silver Wolf Tech",
       "url": "https://www.silverwolftechnologies.in",
       "logo": "https://www.silverwolftechnologies.in/favicon.png",
-      "description": "Full-service digital agency offering web development, SEO, and digital marketing services across India.",
+      "image": "https://www.silverwolftechnologies.in/og-image.jpg",
+      "description": "Full-service digital engineering agency building enterprise web platforms, custom CRMs, mobile applications, and technical SEO campaigns across India and worldwide.",
       "foundingDate": "2015",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Murbad",
+        "addressLocality": "Murbad",
+        "addressRegion": "Maharashtra",
+        "postalCode": "421401",
+        "addressCountry": "IN"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 19.2333,
+        "longitude": 73.3833
+      },
       "contactPoint": {
         "@type": "ContactPoint",
         "telephone": "+919845953801",
         "contactType": "customer service",
-        "areaServed": "IN",
+        "areaServed": ["IN", "GB", "AE", "US", "CA", "AU", "SG"],
         "availableLanguage": ["English", "Hindi", "Marathi"]
       },
       "sameAs": [
         "https://www.linkedin.com/company/silver-wolf-technologies",
         "https://www.instagram.com/silverwolftechnologies"
       ],
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": "Murbad",
-        "addressRegion": "Maharashtra",
-        "addressCountry": "IN"
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "Digital Agency Services",
+        "itemListElement": [
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Website Development" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "E-commerce Development" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Mobile App Development" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "CRM Development" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "SaaS & Web Apps" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "SEO Services" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Digital Marketing" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Social Media Marketing" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "UI/UX Design" } },
+          { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Graphic Design" } }
+        ]
       }
     },
     localBusiness: {
@@ -60,7 +88,7 @@ export default function SchemaMarkup({ type, data }: SchemaProps) {
       "openingHoursSpecification": [
         {
           "@type": "OpeningHoursSpecification",
-          "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
           "opens": "09:00",
           "closes": "18:00"
         }
@@ -73,7 +101,8 @@ export default function SchemaMarkup({ type, data }: SchemaProps) {
       "@type": "WebSite",
       "@id": "https://www.silverwolftechnologies.in/#website",
       "name": "Silver Wolf Technologies",
-      "url": "https://www.silverwolftechnologies.in"
+      "url": "https://www.silverwolftechnologies.in",
+      "publisher": { "@id": "https://www.silverwolftechnologies.in/#organization" }
     },
     breadcrumb: {
       "@context": "https://schema.org",
@@ -91,6 +120,7 @@ export default function SchemaMarkup({ type, data }: SchemaProps) {
       "serviceType": data?.serviceType || "Web Development",
       "provider": {
         "@type": "Organization",
+        "@id": "https://www.silverwolftechnologies.in/#organization",
         "name": "Silver Wolf Technologies",
         "url": "https://www.silverwolftechnologies.in"
       },
@@ -101,12 +131,15 @@ export default function SchemaMarkup({ type, data }: SchemaProps) {
       "description": data?.description || "",
       "name": data?.name || ""
     }
-  }
+  };
+
+  const selectedSchema = schemas[type];
+  if (!selectedSchema) return null;
 
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schemas[type]) }}
+      dangerouslySetInnerHTML={{ __html: safeJsonLd(selectedSchema) }}
     />
-  )
+  );
 }

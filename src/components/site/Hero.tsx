@@ -87,26 +87,55 @@ const BentoShowcaseCard = ({
 export const Hero = () => {
   const [loading, setLoading] = useState(false);
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const fd = new FormData(e.currentTarget);
-    const parsed = enquirySchema.safeParse({
-      name: fd.get("name"),
-      email: fd.get("email"),
-      phone: fd.get("phone"),
-      service: fd.get("service"),
-      message: fd.get("message"),
-    });
+    const formElement = e.currentTarget;
+    const fd = new FormData(formElement);
+    const payload = {
+      name: String(fd.get("name") || ""),
+      email: String(fd.get("email") || ""),
+      phone: String(fd.get("phone") || ""),
+      service: String(fd.get("service") || "Website Development"),
+      message: String(fd.get("message") || ""),
+      honeypot: String(fd.get("hero_url") || ""),
+    };
+
+    const parsed = enquirySchema.safeParse(payload);
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
       return;
     }
+
     setLoading(true);
-    setTimeout(() => {
-      toast.success("Proposal submitted! Our senior team will connect within 24 hours.");
-      (e.target as HTMLFormElement).reset();
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success) {
+        toast.error(data.error || "Submission failed. Please try again.");
+        setLoading(false);
+        return;
+      }
+
+      toast.success(data.message || "Proposal submitted! Our senior team will connect within 24 hours.");
+      formElement.reset();
+
+      if (typeof window !== "undefined" && (window as any).gtag) {
+        (window as any).gtag("event", "generate_lead", {
+          event_category: "Engagement",
+          event_label: payload.service,
+          lead_id: data.leadId,
+        });
+      }
+    } catch {
+      toast.error("Network error. Please try again or email info@silverwolftechnologies.in");
+    } finally {
       setLoading(false);
-    }, 700);
+    }
   };
 
   const { cardRef: heroRightRef, handleMouseMove: handleRightMove, handleMouseLeave: handleRightLeave } = use3DTilt<HTMLDivElement>({
@@ -139,18 +168,18 @@ export const Hero = () => {
               <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-indigo-50 border border-indigo-200/80 shadow-2xs">
                 <Sparkles className="h-4 w-4 text-primary animate-pulse" />
                 <span className="text-xs font-bold uppercase tracking-wider text-indigo-950">
-                  Senior Digital Agency · Apple + Linear Inspired
+                  Engineering & Growth Agency · Murbad, India
                 </span>
               </div>
 
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.08]">
-                Everything <br />
-                Your Business Needs — <br />
-                <span className="text-gradient-primary">In One Place.</span>
+                Web Development, <br />
+                Custom CRM & SEO <br />
+                <span className="text-gradient-primary">Services in India.</span>
               </h1>
 
               <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-normal max-w-xl">
-                We craft enterprise web platforms, mobile apps, AI solutions, and performance growth campaigns for ambitious startups and businesses worldwide.
+                We engineer production-grade web applications, custom CRM platforms, and revenue-driven SEO campaigns for growing businesses in India and worldwide.
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 pt-2">
@@ -204,6 +233,7 @@ export const Hero = () => {
 
               {/* Form inside right bento */}
               <form onSubmit={onSubmit} className="space-y-3.5 translate-z-20">
+                <input type="text" name="hero_url" className="hidden" tabIndex={-1} autoComplete="off" />
                 <div className="grid grid-cols-2 gap-3">
                   <div>
                     <Label htmlFor="hero-name" className="text-xs font-semibold text-slate-700">Full Name</Label>
@@ -291,8 +321,8 @@ export const Hero = () => {
             />
             <BentoShowcaseCard
               icon={Cloud}
-              title="Cloud & Infrastructure"
-              short="Scalable AWS/GCP cloud architectures, Kubernetes orchestration, and 99.99% uptime guarantees."
+              title="Custom CRM & Portals"
+              short="Proprietary CRM platforms, attendance management portals, and sales automations without per-seat fees."
               slug="crm-development"
               span="lg:col-span-4"
               gradient="from-blue-500 via-cyan-500 to-indigo-500"
@@ -309,7 +339,7 @@ export const Hero = () => {
               icon={Palette}
               title="UI/UX & Product Design"
               short="Apple-level design systems, user journeys, micro-interactions, and high-converting visual UI."
-              slug="graphic-design"
+              slug="ui-ux-design"
               span="lg:col-span-4"
               gradient="from-purple-500 via-indigo-500 to-blue-500"
             />

@@ -1,6 +1,7 @@
 import { generateServiceMetadata } from "@/lib/serviceMetadata";
 import ServiceDetailClient from "./ServiceDetailClient";
 import SchemaMarkup from "@/components/SchemaMarkup";
+import { safeJsonLd } from "@/lib/jsonLd";
 import { SERVICES } from "@/data/site";
 import { notFound } from "next/navigation";
 import { serviceParams } from "@/lib/staticParams";
@@ -88,7 +89,7 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceSchema) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(serviceSchema) }}
       />
       <ServiceDetailClient slug={params.slug} />
       {/*
@@ -108,12 +109,12 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
           Australia, and Singapore.
         </p>
         <p>
-          Silver Wolf Technologies {service.title} clients report an average
-          3.4x ROI within 90 days. The agency operates with a founder-led
-          model where senior strategists are present in every meeting —
-          never juniors or call centers. Most projects ship within 2–4 weeks
-          with weekly demos and full code/asset ownership transferred to
-          the client on completion.
+          Every project is delivered with transparent milestone tracking and
+          measurable performance objectives. The agency operates with a founder-led
+          model where senior engineers and product designers are present in every sprint
+          meeting — never juniors or call centers. Most projects ship within 2–4 weeks
+          with weekly demos and full code/asset ownership transferred to the client
+          on completion.
         </p>
         <p>
           To get a free consultation for {service.title} in India, contact
