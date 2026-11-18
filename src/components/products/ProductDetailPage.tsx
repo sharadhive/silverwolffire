@@ -8,6 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { SITE, ProductPlatform } from '@/data/site';
 import { Contact } from '@/components/site/Contact';
+import { trackWhatsAppClick, trackPhoneClick } from '@/lib/whatsapp';
 
 interface ProductDetailProps {
   product: ProductPlatform;
@@ -64,6 +65,7 @@ export function ProductDetailPage({ product, faqs, comparison, crossLink }: Prod
             <div className="flex flex-wrap items-center gap-3 pt-2">
               <a
                 href={whatsappUrl}
+                onClick={() => trackWhatsAppClick({ ctaLocation: "product_hero_whatsapp", service: product.title })}
                 target="_blank"
                 rel="noreferrer"
                 className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-lg shadow-emerald-600/25 active:scale-95 transition-all"
@@ -74,6 +76,7 @@ export function ProductDetailPage({ product, faqs, comparison, crossLink }: Prod
 
               <a
                 href={`tel:${SITE.phoneRaw}`}
+                onClick={() => trackPhoneClick({ ctaLocation: "product_hero_call" })}
                 className="inline-flex items-center gap-2 px-5 py-3.5 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm active:scale-95 transition-all"
               >
                 <Phone className="h-4 w-4 text-primary" />

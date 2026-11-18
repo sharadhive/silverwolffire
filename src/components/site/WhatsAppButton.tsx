@@ -3,6 +3,7 @@
 import { MessageCircle } from "lucide-react";
 import { SITE } from "@/data/site";
 import { usePathname } from "next/navigation";
+import { trackWhatsAppClick } from "@/lib/whatsapp";
 
 export const WhatsAppButton = () => {
   const pathname = usePathname();
@@ -15,6 +16,7 @@ export const WhatsAppButton = () => {
   return (
     <a
       href={`https://wa.me/${SITE.whatsapp}?text=Hi%20Silver%20Wolf%20Technologies%2C%20I%27d%20like%20a%20free%20consultation.`}
+      onClick={() => trackWhatsAppClick({ ctaLocation: "floating_whatsapp_button", path: pathname })}
       target="_blank"
       rel="noreferrer"
       aria-label="Chat with Silver Wolf Technologies on WhatsApp"

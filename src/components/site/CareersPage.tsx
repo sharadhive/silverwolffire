@@ -27,6 +27,7 @@ import {
   Search
 } from "lucide-react";
 import { SITE } from "@/data/site";
+import { buildWhatsAppCareerUrl, trackWhatsAppClick } from "@/lib/whatsapp";
 import Breadcrumb from "@/components/Breadcrumb";
 
 export type HiringType = "Internship" | "Full-Time" | "Part-Time" | "Trainer";
@@ -364,34 +365,36 @@ export const CareersPage = () => {
     setIsSubmitting(true);
     setFormError("");
 
-    const hiringTypesText = selectedJob.hiringTypes.join(", ");
-    const stackText = selectedJob.stack.join(", ");
+    const whatsappUrl = buildWhatsAppCareerUrl(
+      {
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        college: college.trim(),
+        semesterYear: semesterYear.trim(),
+        role: selectedJob.title,
+        category: selectedJob.category,
+        duration: selectedJob.duration,
+        hiringTypes: selectedJob.hiringTypes,
+        stack: selectedJob.stack,
+        portfolio: portfolio.trim(),
+        source: source.trim(),
+        sourceUrl: typeof window !== "undefined" ? window.location.href : `${SITE.domain}/careers`,
+      },
+      SITE.whatsapp
+    );
 
-    const message = `🐺 *New Career Application — Silver Wolf Technologies*\n\n` +
-      `📋 *Position:* ${selectedJob.title}\n` +
-      `📂 *Category:* ${selectedJob.category}\n` +
-      `⏱ *Duration:* ${selectedJob.duration}\n` +
-      `💼 *Hiring Types:* ${hiringTypesText}\n` +
-      `🛠 *Tech Stack:* ${stackText}\n\n` +
-      `──────────────────\n` +
-      `👤 *Applicant Details*\n\n` +
-      `*Name:* ${name.trim()}\n` +
-      `*Email:* ${email.trim()}\n` +
-      `*Phone:* ${phone.trim()}\n` +
-      `*College:* ${college.trim()}\n` +
-      `*Semester / Year:* ${semesterYear}\n` +
-      (portfolio ? `*Portfolio / LinkedIn:* ${portfolio.trim()}\n` : "") +
-      `*Source:* ${source}\n\n` +
-      `──────────────────\n` +
-      `Sent from silverwolftechnologies.in/careers`;
-
-    const whatsappUrl = `https://wa.me/919373922206?text=${encodeURIComponent(message)}`;
+    trackWhatsAppClick({
+      ctaLocation: "careers_application_modal",
+      service: selectedJob.title,
+      path: "/careers",
+    });
 
     setTimeout(() => {
       window.open(whatsappUrl, "_blank");
       setIsSuccess(true);
       setIsSubmitting(false);
-    }, 400);
+    }, 300);
   };
 
   const breadcrumbs = [

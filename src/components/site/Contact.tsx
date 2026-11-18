@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { Mail, Phone, MapPin, MessageCircle, Send } from "lucide-react";
 import { SITE } from "@/data/site";
+import { buildWhatsAppEnquiryUrl, trackWhatsAppClick, trackPhoneClick } from "@/lib/whatsapp";
 
 const schema = z.object({
   name: z.string().trim().min(2, "Name is too short").max(100),
@@ -26,18 +27,9 @@ export const Contact = ({ compact = false, presetService }: Props) => {
   const [phone, setPhone] = useState("");
   const [message, setMessage] = useState(presetService ? `I am interested in ${presetService}. ` : "");
 
-  const handleWhatsAppDirect = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const serviceName = presetService || "Custom Software / Web Development";
-    const text = encodeURIComponent(
-      `Hello Silver Wolf Technologies,\nName: ${name || "Visitor"}\nEmail: ${email || "Not specified"}\nPhone: ${phone || "Not specified"}\nService: ${serviceName}\nMessage: ${message || "Interested in learning more about your services."}`
-    );
-    window.open(`https://wa.me/${SITE.whatsapp}?text=${text}`, "_blank");
-  };
-
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (loading || submitted) return;
+    if (loading) return;
 
     const formElement = e.currentTarget;
     const fd = new FormData(formElement);
@@ -50,6 +42,10 @@ export const Contact = ({ compact = false, presetService }: Props) => {
       honeypot: String(fd.get("website_url") || ""),
     };
 
+    if (payload.honeypot) {
+      return;
+    }
+
     const parsed = schema.safeParse(payload);
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
@@ -58,40 +54,25 @@ export const Contact = ({ compact = false, presetService }: Props) => {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+      const url = buildWhatsAppEnquiryUrl({
+        name: payload.name,
+        email: payload.email,
+        phone: payload.phone,
+        service: payload.service,
+        message: payload.message,
+        sourceUrl: typeof window !== "undefined" ? window.location.href : SITE.domain,
       });
-      const data = await res.json();
 
-      if (!res.ok || !data.success) {
-        toast.error(
-          data.error || "Web dispatch is currently unavailable. Please click 'Chat on WhatsApp Directly' to send your brief."
-        );
-        setLoading(false);
-        // Form inputs are preserved on failure so the user does not lose their typed brief
-        return;
-      }
+      trackWhatsAppClick({
+        ctaLocation: compact ? "service_contact_form" : "contact_page_form",
+        service: payload.service,
+      });
 
+      window.open(url, "_blank");
       setSubmitted(true);
-      toast.success(data.message || "Thanks! Our senior team will reach out within 24 hours.");
-      formElement.reset();
-      setName("");
-      setEmail("");
-      setPhone("");
-      setMessage("");
-
-      // Dispatch analytics event safely only upon verified server acceptance
-      if (typeof window !== "undefined" && (window as any).gtag) {
-        (window as any).gtag("event", "generate_lead", {
-          event_category: "Engagement",
-          event_label: payload.service,
-          lead_id: data.leadId,
-        });
-      }
+      toast.success("WhatsApp opened with your prefilled brief! Tap Send in the chat to connect with our team.");
     } catch {
-      toast.error("Network error connecting to lead server. Please click 'Chat on WhatsApp Directly' to send your brief.");
+      toast.error("Unable to open WhatsApp. Please click the Call button to reach us directly.");
     } finally {
       setLoading(false);
     }
@@ -114,7 +95,11 @@ export const Contact = ({ compact = false, presetService }: Props) => {
 
             <div className="space-y-3">
               {/* Direct Phone */}
-              <a href={`tel:${SITE.phoneRaw}`} className="flex items-center gap-4 glass rounded-2xl p-4 hover:border-primary/50 hover:shadow-md transition-all group">
+              <a
+                href={`tel:${SITE.phoneRaw}`}
+                onClick={() => trackPhoneClick({ ctaLocation: compact ? "service_contact_sidebar_phone" : "contact_sidebar_phone" })}
+                className="flex items-center gap-4 glass rounded-2xl p-4 hover:border-primary/50 hover:shadow-md transition-all group"
+              >
                 <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all">
                   <Phone className="h-5 w-5" />
                 </div>
@@ -125,7 +110,13 @@ export const Contact = ({ compact = false, presetService }: Props) => {
               </a>
 
               {/* Direct WhatsApp */}
-              <a href={`https://wa.me/${SITE.whatsapp}?text=Hello%20Silver%20Wolf%20Technologies,%20I%20would%20like%20to%20discuss%20a%20software%20project.`} target="_blank" rel="noreferrer" className="flex items-center gap-4 glass rounded-2xl p-4 hover:border-emerald-400 hover:shadow-md transition-all group">
+              <a
+                href={`https://wa.me/${SITE.whatsapp}?text=Hello%20Silver%20Wolf%20Technologies,%20I%20would%20like%20to%20discuss%20a%20software%20project.`}
+                onClick={() => trackWhatsAppClick({ ctaLocation: compact ? "service_contact_sidebar_whatsapp" : "contact_sidebar_whatsapp", service: presetService })}
+                target="_blank"
+                rel="noreferrer"
+                className="flex items-center gap-4 glass rounded-2xl p-4 hover:border-emerald-400 hover:shadow-md transition-all group"
+              >
                 <div className="h-10 w-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-all">
                   <MessageCircle className="h-5 w-5" />
                 </div>
@@ -223,22 +214,27 @@ export const Contact = ({ compact = false, presetService }: Props) => {
             </div>
 
             <div className="grid sm:grid-cols-2 gap-3 pt-2">
-              <Button type="submit" variant="hero" size="lg" disabled={loading} className="w-full shadow-lg shadow-indigo-500/20">
-                {loading ? "Transmitting..." : <>Send Inquiry <Send className="h-4 w-4 ml-1" /></>}
-              </Button>
-
-              <button
-                type="button"
-                onClick={handleWhatsAppDirect}
-                className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20 transition-all active:scale-95"
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-600/25 transition-all active:scale-95"
               >
                 <MessageCircle className="h-4.5 w-4.5" />
-                <span>Chat on WhatsApp Directly</span>
-              </button>
+                <span>{loading ? "Opening..." : "Continue on WhatsApp"}</span>
+              </Button>
+
+              <a
+                href={`tel:${SITE.phoneRaw}`}
+                onClick={() => trackPhoneClick({ ctaLocation: compact ? "service_contact_call" : "contact_form_call" })}
+                className="w-full py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all active:scale-95 text-center"
+              >
+                <Phone className="h-4.5 w-4.5 text-primary" />
+                <span>Call {SITE.phone}</span>
+              </a>
             </div>
 
-            <p className="text-[11px] text-muted-foreground text-center pt-1">
-              Guaranteed response within 24 hours · 100% confidential · No unsolicited marketing.
+            <p className="text-[11px] text-muted-foreground text-center pt-1 leading-normal">
+              WhatsApp will open with your details prefilled. Tap Send in chat. Attachments can be shared directly.
             </p>
           </form>
         </div>

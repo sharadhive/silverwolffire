@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 import { Phone, MessageCircle } from 'lucide-react';
 import { SITE } from '@/data/site';
+import { trackWhatsAppClick, trackPhoneClick } from '@/lib/whatsapp';
 
 /**
  * Mobile Sticky Contact Bar
@@ -27,6 +28,7 @@ export function MobileStickyContact() {
         {/* Direct Call CTA */}
         <a
           href={`tel:${SITE.phoneRaw}`}
+          onClick={() => trackPhoneClick({ ctaLocation: 'mobile_sticky_call', path: pathname })}
           className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-slate-900 text-white font-bold text-xs shadow-md active:scale-95 transition-all"
         >
           <Phone className="h-4 w-4 text-primary" />
@@ -36,6 +38,7 @@ export function MobileStickyContact() {
         {/* WhatsApp CTA */}
         <a
           href={`https://wa.me/${SITE.whatsapp}?text=${defaultWhatsappMsg}`}
+          onClick={() => trackWhatsAppClick({ ctaLocation: 'mobile_sticky_whatsapp', path: pathname })}
           target="_blank"
           rel="noreferrer"
           className="flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md shadow-emerald-600/25 active:scale-95 transition-all"

@@ -19,6 +19,7 @@ import heroBg from "@/assets/hero-bg.jpg";
 import heroIllustration from "@/assets/hero-illustration.jpg";
 import logo from "@/assets/logo.png";
 import { SITE } from "@/data/site";
+import { buildWhatsAppEnquiryUrl, trackWhatsAppClick, trackPhoneClick } from "@/lib/whatsapp";
 
 const enquirySchema = z.object({
   name: z.string().trim().min(2, "Name is too short").max(100),
@@ -99,17 +100,9 @@ export const Hero = () => {
   const [formService, setFormService] = useState("LMS System");
   const [formMessage, setFormMessage] = useState("");
 
-  const handleWhatsAppRedirect = (e: React.MouseEvent) => {
-    e.preventDefault();
-    const text = encodeURIComponent(
-      `Hello Silver Wolf Technologies,\nName: ${formName || "Visitor"}\nEmail: ${formEmail || "Not provided"}\nService: ${formService}\nMessage: ${formMessage || "Interested in learning more."}`
-    );
-    window.open(`https://wa.me/${SITE.whatsapp}?text=${text}`, "_blank");
-  };
-
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (loading || submitted) return;
+    if (loading) return;
 
     const formElement = e.currentTarget;
     const fd = new FormData(formElement);
@@ -122,6 +115,10 @@ export const Hero = () => {
       honeypot: String(fd.get("hero_url") || ""),
     };
 
+    if (payload.honeypot) {
+      return;
+    }
+
     const parsed = enquirySchema.safeParse(payload);
     if (!parsed.success) {
       toast.error(parsed.error.issues[0].message);
@@ -130,39 +127,25 @@ export const Hero = () => {
 
     setLoading(true);
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+      const url = buildWhatsAppEnquiryUrl({
+        name: payload.name,
+        email: payload.email,
+        phone: payload.phone,
+        service: payload.service,
+        message: payload.message,
+        sourceUrl: typeof window !== "undefined" ? window.location.href : SITE.domain,
       });
-      const data = await res.json();
 
-      if (!res.ok || !data.success) {
-        toast.error(
-          data.error || "Web dispatch is currently unavailable. Please click 'WhatsApp Brief' below to send your message directly."
-        );
-        setLoading(false);
-        // Form inputs preserved on failure so user does not lose their typed brief
-        return;
-      }
+      trackWhatsAppClick({
+        ctaLocation: "hero_form",
+        service: payload.service,
+      });
 
+      window.open(url, "_blank");
       setSubmitted(true);
-      toast.success(data.message || "Proposal submitted! Our senior team will connect within 24 hours.");
-      formElement.reset();
-      setFormName("");
-      setFormEmail("");
-      setFormPhone("");
-      setFormMessage("");
-
-      if (typeof window !== "undefined" && (window as any).gtag) {
-        (window as any).gtag("event", "generate_lead", {
-          event_category: "Engagement",
-          event_label: payload.service,
-          lead_id: data.leadId,
-        });
-      }
+      toast.success("WhatsApp opened with your project brief! Tap Send in the chat to connect with our team.");
     } catch {
-      toast.error("Network error connecting to lead server. Please click 'WhatsApp Brief' to send your message directly.");
+      toast.error("Unable to open WhatsApp. Please click the Call button to reach us directly.");
     } finally {
       setLoading(false);
     }
@@ -367,18 +350,26 @@ export const Hero = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 pt-1">
-                  <Button type="submit" variant="hero" size="sm" disabled={loading} className="w-full py-2 text-xs shadow-md shadow-indigo-500/20">
-                    {loading ? "Transmitting..." : <>Send Proposal <Send className="h-3 w-3 ml-1" /></>}
-                  </Button>
-                  <button
-                    type="button"
-                    onClick={handleWhatsAppRedirect}
-                    className="w-full py-2 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-colors"
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-2 px-2 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold flex items-center justify-center gap-1.5 shadow-md shadow-emerald-600/20 transition-all active:scale-95"
                   >
                     <MessageCircle className="h-3.5 w-3.5" />
-                    <span>WhatsApp Brief</span>
-                  </button>
+                    <span>{loading ? "Opening..." : "Continue on WhatsApp"}</span>
+                  </Button>
+                  <a
+                    href={`tel:${SITE.phoneRaw}`}
+                    onClick={() => trackPhoneClick({ ctaLocation: "hero_form_call" })}
+                    className="w-full py-2 px-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-colors text-center"
+                  >
+                    <Phone className="h-3.5 w-3.5 text-primary" />
+                    <span>Call Now</span>
+                  </a>
                 </div>
+                <p className="text-[10px] text-slate-500 pt-1 text-center leading-tight">
+                  WhatsApp will open with your details prefilled. Tap Send in chat. Attachments can be shared directly.
+                </p>
               </form>
 
               <div className="pt-2 flex items-center justify-between text-[11px] text-slate-500 border-t border-slate-100 translate-z-10">

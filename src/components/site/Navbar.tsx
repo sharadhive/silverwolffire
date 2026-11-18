@@ -10,6 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
 import { SERVICES, SITE, PRODUCT_PLATFORMS } from "@/data/site";
+import { trackWhatsAppClick, trackPhoneClick } from "@/lib/whatsapp";
 
 const links = [
   { to: "/", label: "Home" },
@@ -212,6 +213,7 @@ export const Navbar = () => {
             {/* Phone Call CTA */}
             <a
               href={`tel:${SITE.phoneRaw}`}
+              onClick={() => trackPhoneClick({ ctaLocation: 'navbar_phone', path: pathname })}
               className="flex items-center gap-1.5 text-xs font-bold text-slate-800 hover:text-primary px-3 py-1.5 rounded-full hover:bg-slate-100/80 transition-colors"
               title="Call Silver Wolf Technologies directly"
             >
@@ -222,6 +224,7 @@ export const Navbar = () => {
             {/* WhatsApp CTA */}
             <a
               href={`https://wa.me/${SITE.whatsapp}?text=Hello%20Silver%20Wolf%20Technologies,%20I%20would%20like%20to%20discuss%20a%20software%20project.`}
+              onClick={() => trackWhatsAppClick({ ctaLocation: 'navbar_whatsapp', path: pathname })}
               target="_blank"
               rel="noreferrer"
               className="flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200/90 px-3 py-1.5 rounded-full shadow-2xs transition-all"

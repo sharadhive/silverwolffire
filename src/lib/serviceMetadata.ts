@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from "next/navigation";
 import { SERVICES, cityFromSlug, subCityFromSlug, SITE, citySlug } from "../data/site";
 import { getAreaData } from "./locationData";
 import { isLocalityIndexable } from "./curatedCities";
+import { INTERNATIONAL_CITY_SLUGS } from "./seo/indexPolicy";
 
 // ─── City-level title pool (intent-first, no unverified superlatives) ───────
 const CITY_TITLE_POOL = [
@@ -131,8 +132,10 @@ export function generateServiceMetadata(slug: string, citySlugParam?: string, su
    * Curated locality pages are indexed; template fallback localities receive
    * `noindex, follow` to protect overall domain crawl health.
    */
+  const isIntl = citySlugParam ? INTERNATIONAL_CITY_SLUGS.has(citySlugParam) : false;
   const indexable =
-    !subCity || (citySlugParam ? isLocalityIndexable(citySlugParam, service.slug) : false);
+    !isIntl &&
+    (!subCity || (citySlugParam ? isLocalityIndexable(citySlugParam, service.slug) : false));
 
   return {
     title: {

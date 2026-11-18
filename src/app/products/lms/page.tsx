@@ -76,9 +76,9 @@ const jsonLd = {
   applicationCategory: 'EducationalApplication',
   offers: {
     '@type': 'Offer',
-    price: '0',
     priceCurrency: 'INR',
-    description: 'Custom implementation with full code ownership and zero monthly per-seat fees.',
+    description: 'Custom enterprise implementation quoted per scope with zero recurring monthly per-student licensing.',
+    availability: 'https://schema.org/InStock',
   },
   creator: {
     '@type': 'Organization',

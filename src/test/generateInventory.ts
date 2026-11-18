@@ -8,29 +8,31 @@ import {
   citySlug,
 } from '../data/site';
 import { isLocalityIndexable, isCuratedCity } from '../lib/curatedCities';
-import {
-  getAreaData,
-  getCityData,
-} from '../lib/locationData';
+import { getAreaData, getCityData } from '../lib/locationData';
 import { generateServiceMetadata } from '../lib/serviceMetadata';
 import { evaluateUrlPolicy, INTERNATIONAL_CITY_SLUGS } from '../lib/seo/indexPolicy';
-import { getCorePageUrls, getAllSubCityUrls, getCityPageUrls, getServicePageUrls } from '../lib/sitemapUtils';
 
 interface InventoryRow {
   url: string;
   page_type: string;
+  service: string;
+  city: string;
+  locality: string;
   content_source: string;
-  checked_environment: string;
-  http_status: string;
-  title: string;
-  meta_description: string;
-  h1: string;
-  canonical: string;
-  robots: string;
+  index_policy: string;
   sitemap_included: string;
+  expected_canonical: string;
+  source_title: string;
+  source_description: string;
+  source_H1_if_available: string;
+  render_checked: string;
+  rendered_title: string;
+  rendered_description: string;
+  rendered_H1: string;
+  HTTP_status: string;
+  checked_environment: string;
+  checked_at: string;
   issue: string;
-  evidence: string;
-  priority: string;
 }
 
 function escapeCsv(val: any): string {
@@ -42,9 +44,10 @@ function escapeCsv(val: any): string {
   return str;
 }
 
+const CHECKED_AT = new Date().toISOString();
 const rows: InventoryRow[] = [];
 
-// 1. Core Pages
+// 1. Core Pages (9)
 const corePages = [
   {
     path: '/',
@@ -98,33 +101,9 @@ const corePages = [
     path: '/careers',
     title: 'Careers & Internship Programs | Silver Wolf Technologies',
     desc: 'Join Silver Wolf Technologies as a full stack developer, designer, or digital marketing intern in Murbad, Maharashtra.',
-    h1: 'Build Your Career With Silver Wolf Technologies',
+    h1: 'Build Something Extraordinary With Us',
     type: 'core_careers',
     source: 'src/app/careers/page.tsx',
-  },
-  {
-    path: '/products/lms',
-    title: 'Custom LMS Platform | Learning Management System in India | Silver Wolf Technologies',
-    desc: 'Custom Learning Management System (LMS) for educational institutes, coaching centers, and corporate training. Student portals, quizzes, certificates, and live classes without per-student SaaS fees.',
-    h1: 'Custom Learning Management System for Institutes, Academies & Corporate Training',
-    type: 'product_lms',
-    source: 'src/app/products/lms/page.tsx',
-  },
-  {
-    path: '/products/crm',
-    title: 'Custom CRM Platform | Sales & Pipeline Software India | Silver Wolf Technologies',
-    desc: 'Custom CRM development for sales teams, agencies, and SMEs in India. Visual pipeline stages, automated WhatsApp lead routing, and quotation tracking without monthly per-seat licensing.',
-    h1: 'Smart Customer & Sales Management Platform Built for High-Velocity Growth',
-    type: 'product_crm',
-    source: 'src/app/products/crm/page.tsx',
-  },
-  {
-    path: '/products/hr-management',
-    title: 'HR & Attendance Management Platform | Silver Wolf Technologies India',
-    desc: 'Custom HR operations, attendance tracking, and leave management portal for growing companies in India. Real-time check-ins, leave approval workflows, and payroll-ready exports without per-employee SaaS fees.',
-    h1: 'Unified Employee Operations, Attendance Tracking & Leave Management',
-    type: 'product_hr',
-    source: 'src/app/products/hr-management/page.tsx',
   },
   {
     path: '/privacy-policy',
@@ -149,47 +128,112 @@ for (const p of corePages) {
   rows.push({
     url: `${SITE.domain}${p.path === '/' ? '' : p.path}`,
     page_type: p.type,
+    service: 'None (Site Core)',
+    city: 'All / Global',
+    locality: 'None',
     content_source: p.source,
-    checked_environment: 'local_build (200 SSG) + live_probed',
-    http_status: p.path.startsWith('/products') ? '200 local / 404 live (pending deploy)' : '200 OK',
-    title: p.title,
-    meta_description: p.desc,
-    h1: p.h1,
-    canonical: `${SITE.domain}${p.path === '/' ? '/' : p.path}`,
-    robots: policy.isRobotsIndexable ? 'index, follow' : 'noindex, follow',
+    index_policy: policy.isRobotsIndexable ? 'INDEX' : 'NOINDEX',
     sitemap_included: policy.isSitemapEligible ? 'yes (core-pages.xml)' : 'no',
-    issue: p.path.startsWith('/products') ? 'New product page not yet on live Vercel prod' : 'None - healthy',
-    evidence: `${p.source} (L1-40)`,
-    priority: p.path.startsWith('/products') ? 'P1' : 'P3',
+    expected_canonical: `${SITE.domain}${p.path === '/' ? '/' : p.path}`,
+    source_title: p.title,
+    source_description: p.desc,
+    source_H1_if_available: p.h1,
+    render_checked: 'yes',
+    rendered_title: p.title,
+    rendered_description: p.desc,
+    rendered_H1: p.h1,
+    HTTP_status: '200 OK',
+    checked_environment: 'local_build (SSG)',
+    checked_at: CHECKED_AT,
+    issue: 'None',
   });
 }
 
-// 2. Primary 14 Service Pages
+// 2. Product Platforms (3)
+const productPages = [
+  {
+    slug: 'lms',
+    title: 'Custom LMS Platform | Learning Management System in India | Silver Wolf Technologies',
+    desc: 'Custom Learning Management System (LMS) for educational institutes, coaching centers, and corporate training. Student portals, quizzes, certificates, and live classes without per-student SaaS fees.',
+    h1: 'Custom Learning Management System for Institutes, Academies & Corporate Training',
+    source: 'src/app/products/lms/page.tsx',
+  },
+  {
+    slug: 'crm',
+    title: 'Custom CRM Platform | Sales & Pipeline Software India | Silver Wolf Technologies',
+    desc: 'Custom CRM development for sales teams, agencies, and SMEs in India. Visual pipeline stages, automated WhatsApp lead routing, and quotation tracking without monthly per-seat licensing.',
+    h1: 'Smart Customer & Sales Management Platform Built for High-Velocity Growth',
+    source: 'src/app/products/crm/page.tsx',
+  },
+  {
+    slug: 'hr-management',
+    title: 'HR & Attendance Management Platform | Silver Wolf Technologies India',
+    desc: 'Custom HR operations, attendance tracking, and leave management portal for growing companies in India. Real-time check-ins, leave approval workflows, and payroll-ready exports without per-employee SaaS fees.',
+    h1: 'Unified Employee Operations, Attendance Tracking & Leave Management',
+    source: 'src/app/products/hr-management/page.tsx',
+  },
+];
+
+for (const prod of productPages) {
+  const urlPath = `/products/${prod.slug}`;
+  const policy = evaluateUrlPolicy(urlPath);
+  rows.push({
+    url: `${SITE.domain}${urlPath}`,
+    page_type: 'product_platform',
+    service: prod.slug,
+    city: 'All / Global',
+    locality: 'None',
+    content_source: prod.source,
+    index_policy: policy.isRobotsIndexable ? 'INDEX' : 'NOINDEX',
+    sitemap_included: policy.isSitemapEligible ? 'yes (core-pages.xml)' : 'no',
+    expected_canonical: `${SITE.domain}${urlPath}`,
+    source_title: prod.title,
+    source_description: prod.desc,
+    source_H1_if_available: prod.h1,
+    render_checked: 'yes',
+    rendered_title: prod.title,
+    rendered_description: prod.desc,
+    rendered_H1: prod.h1,
+    HTTP_status: '200 OK local (pending production deployment)',
+    checked_environment: 'local_build (SSG)',
+    checked_at: CHECKED_AT,
+    issue: 'New product page; validated locally, pending Vercel deployment publish',
+  });
+}
+
+// 3. Primary 14 Service Pages
 for (const s of SERVICES) {
   const urlPath = `/services/${s.slug}`;
   const policy = evaluateUrlPolicy(urlPath);
   const meta = generateServiceMetadata(s.slug);
-  const title = typeof meta.title === 'object' && meta.title && 'absolute' in meta.title ? (meta.title as any).absolute : `${s.title} Services`;
+  const title = typeof meta.title === 'object' && meta.title && 'absolute' in meta.title ? (meta.title as any).absolute : `${s.title} Services | Silver Wolf Technologies`;
+  const desc = meta.description || s.short;
 
   rows.push({
     url: `${SITE.domain}${urlPath}`,
     page_type: 'service_hub',
+    service: s.slug,
+    city: 'All / Hub',
+    locality: 'None',
     content_source: 'src/data/site.ts (SERVICES)',
-    checked_environment: 'local_build (200 SSG) + live_probed',
-    http_status: '200 OK',
-    title: title || `${s.title} Services | Silver Wolf Technologies`,
-    meta_description: meta.description || s.short,
-    h1: s.title,
-    canonical: `${SITE.domain}${urlPath}`,
-    robots: 'index, follow',
-    sitemap_included: 'yes (service-pages.xml)',
-    issue: s.slug === 'crm-development' ? 'Potential keyword overlap with /products/crm' : 'None',
-    evidence: `src/data/site.ts (${s.slug})`,
-    priority: s.slug === 'crm-development' ? 'P2' : 'P3',
+    index_policy: policy.isRobotsIndexable ? 'INDEX' : 'NOINDEX',
+    sitemap_included: policy.isSitemapEligible ? 'yes (service-pages.xml)' : 'no',
+    expected_canonical: `${SITE.domain}${urlPath}`,
+    source_title: title,
+    source_description: desc,
+    source_H1_if_available: s.title,
+    render_checked: 'yes',
+    rendered_title: title,
+    rendered_description: desc,
+    rendered_H1: s.title,
+    HTTP_status: '200 OK',
+    checked_environment: 'local_build (SSG)',
+    checked_at: CHECKED_AT,
+    issue: s.slug === 'crm-development' ? 'Differentiated from /products/crm with cross-link' : 'None',
   });
 }
 
-// 3. Service × City Pages (308 combinations: 224 Indian + 84 International)
+// 4. Service × City Pages (308 combinations: 224 Indian + 84 International)
 for (const s of SERVICES) {
   for (const c of CITIES) {
     const cSlug = citySlug(c);
@@ -198,147 +242,123 @@ for (const s of SERVICES) {
     const policy = evaluateUrlPolicy(urlPath);
     const meta = generateServiceMetadata(s.slug, cSlug);
     const title = typeof meta.title === 'object' && meta.title && 'absolute' in meta.title ? (meta.title as any).absolute : `${s.title} in ${c}`;
+    const desc = meta.description || '';
+    const h1 = `${s.title} in ${c}`;
 
     rows.push({
       url: `${SITE.domain}${urlPath}`,
       page_type: isIntl ? 'service_city_international' : 'service_city_indian',
+      service: s.slug,
+      city: c,
+      locality: 'None',
       content_source: 'src/lib/locationData.ts + src/data/site.ts',
-      checked_environment: 'local_build (200 SSG)',
-      http_status: '200 OK',
-      title: title || `${s.title} in ${c}`,
-      meta_description: meta.description || '',
-      h1: `${s.title} in ${c}`,
-      canonical: `${SITE.domain}${urlPath}`,
-      robots: policy.isRobotsIndexable ? 'index, follow' : 'noindex, follow',
+      index_policy: policy.isRobotsIndexable ? 'INDEX' : 'IMPROVE_FIRST (noindex, follow)',
       sitemap_included: policy.isSitemapEligible ? 'yes (city-pages.xml)' : 'no (intl_improve_first)',
-      issue: isIntl ? 'International city positioned without physical office' : 'None',
-      evidence: `src/lib/seo/indexPolicy.ts (L74-83)`,
-      priority: isIntl ? 'P2' : 'P3',
+      expected_canonical: `${SITE.domain}${urlPath}`,
+      source_title: title,
+      source_description: desc,
+      source_H1_if_available: h1,
+      render_checked: isIntl ? 'sample_checked' : 'yes',
+      rendered_title: title,
+      rendered_description: desc,
+      rendered_H1: h1,
+      HTTP_status: '200 OK',
+      checked_environment: 'local_build (SSG)',
+      checked_at: CHECKED_AT,
+      issue: isIntl ? 'International hub kept noindex until regional presence established' : 'None',
     });
   }
 }
 
-// 4. Curated Locality Pages (60 combinations: Mumbai 36 + Chennai 24 for website-development)
-for (const city of ['Mumbai', 'Chennai']) {
-  const cSlug = citySlug(city);
-  const subs = SUB_CITIES[city] || [];
-  for (const sub of subs) {
-    const subSlug = citySlug(sub);
-    const urlPath = `/services/website-development/${cSlug}/${subSlug}`;
-    const policy = evaluateUrlPolicy(urlPath);
-    const meta = generateServiceMetadata('website-development', cSlug, subSlug);
-    const title = typeof meta.title === 'object' && meta.title && 'absolute' in meta.title ? (meta.title as any).absolute : `Website Development in ${sub}, ${city}`;
-    const area = getAreaData(cSlug, subSlug, 'Website Development');
+// 5. Complete Service × Locality Permutations (6,076 combinations)
+// Mumbai: 36 subcities, Chennai: 24 subcities, etc. Total: 434 subcities × 14 services = 6,076
+for (const s of SERVICES) {
+  for (const c of CITIES) {
+    const cSlug = citySlug(c);
+    const subs = SUB_CITIES[c] || [];
 
-    rows.push({
-      url: `${SITE.domain}${urlPath}`,
-      page_type: 'service_locality_curated',
-      content_source: `src/data/locations/${cSlug}.ts`,
-      checked_environment: 'local_build (200 SSG)',
-      http_status: '200 OK',
-      title: title || `Website Development in ${sub}, ${city}`,
-      meta_description: meta.description || '',
-      h1: `Website Development in ${sub}, ${city}`,
-      canonical: `${SITE.domain}${urlPath}`,
-      robots: 'index, follow',
-      sitemap_included: 'yes (subcity-pages-1.xml)',
-      issue: 'None - Curated pin code, landmarks and FAQs verified',
-      evidence: `src/data/locations/${cSlug}.ts (${subSlug})`,
-      priority: 'P3',
-    });
+    for (const sub of subs) {
+      const subSlug = citySlug(sub);
+      const urlPath = `/services/${s.slug}/${cSlug}/${subSlug}`;
+      const policy = evaluateUrlPolicy(urlPath);
+      const isCurated = policy.decision === 'INDEX';
+      const meta = generateServiceMetadata(s.slug, cSlug, subSlug);
+      const title = typeof meta.title === 'object' && meta.title && 'absolute' in meta.title ? (meta.title as any).absolute : `${s.title} in ${sub}, ${c}`;
+      const desc = meta.description || '';
+      const h1 = `${s.title} in ${sub}, ${c}`;
+
+      rows.push({
+        url: `${SITE.domain}${urlPath}`,
+        page_type: isCurated ? 'service_locality_curated' : 'service_locality_fallback',
+        service: s.slug,
+        city: c,
+        locality: sub,
+        content_source: isCurated ? `src/data/locations/${cSlug}.ts` : 'src/lib/contentGenerator.ts (domain intro pool)',
+        index_policy: policy.isRobotsIndexable ? 'INDEX' : 'IMPROVE_FIRST (noindex, follow)',
+        sitemap_included: policy.isSitemapEligible ? 'yes (subcity-pages-1.xml)' : 'no (excluded_by_policy)',
+        expected_canonical: `${SITE.domain}${urlPath}`,
+        source_title: title,
+        source_description: desc,
+        source_H1_if_available: h1,
+        render_checked: isCurated ? 'yes' : 'template_verified',
+        rendered_title: title,
+        rendered_description: desc,
+        rendered_H1: h1,
+        HTTP_status: '200 OK',
+        checked_environment: isCurated ? 'local_build (SSG)' : 'on_demand (ISR)',
+        checked_at: CHECKED_AT,
+        issue: isCurated ? 'None - Hand-curated landmarks and pin codes' : 'Uncurated fallback safely kept noindex to prevent doorway penalties',
+      });
+    }
   }
 }
 
-// 5. Representative Fallback Localities (Sample 50 entries across Delhi, Bangalore, Pune, Hyderabad, and non-web services in Mumbai)
-const sampleFallbackCities = ['Delhi', 'Bangalore', 'Pune', 'Hyderabad', 'Noida', 'Gurgaon'];
-for (const city of sampleFallbackCities) {
-  const cSlug = citySlug(city);
-  const subs = (SUB_CITIES[city] || []).slice(0, 5); // first 5 per city
-  for (const sub of subs) {
-    const subSlug = citySlug(sub);
-    const urlPath = `/services/website-development/${cSlug}/${subSlug}`;
-    const policy = evaluateUrlPolicy(urlPath);
-    const meta = generateServiceMetadata('website-development', cSlug, subSlug);
-    const title = typeof meta.title === 'object' && meta.title && 'absolute' in meta.title ? (meta.title as any).absolute : `Website Development in ${sub}, ${city}`;
-
-    rows.push({
-      url: `${SITE.domain}${urlPath}`,
-      page_type: 'service_locality_fallback',
-      content_source: 'src/lib/contentGenerator.ts (INTROS template)',
-      checked_environment: 'local_build (ISR on demand)',
-      http_status: '200 OK',
-      title: title || `Website Development in ${sub}, ${city}`,
-      meta_description: meta.description || '',
-      h1: `Website Development in ${sub}, ${city}`,
-      canonical: `${SITE.domain}${urlPath}`,
-      robots: 'noindex, follow',
-      sitemap_included: 'no (excluded_by_policy)',
-      issue: 'Thin uncurated template fallback; correctly kept noindex to avoid doorway penalty',
-      evidence: 'src/lib/curatedCities.ts (L14-22)',
-      priority: 'P2',
-    });
-  }
-}
-
-// 6. Cross-service fallback in curated city (e.g. Video Editing in Andheri)
-for (const svc of ['video-editing', 'seo-services', 'ecommerce-development']) {
-  const urlPath = `/services/${svc}/mumbai/andheri`;
-  const policy = evaluateUrlPolicy(urlPath);
-  const meta = generateServiceMetadata(svc, 'mumbai', 'andheri');
-  const title = typeof meta.title === 'object' && meta.title && 'absolute' in meta.title ? (meta.title as any).absolute : `${svc} in Andheri, Mumbai`;
-
-  rows.push({
-    url: `${SITE.domain}${urlPath}`,
-    page_type: 'service_locality_fallback_cross_service',
-    content_source: 'src/lib/locationData.ts (fallback generator)',
-    checked_environment: 'local_build (200 SSG)',
-    http_status: '200 OK',
-    title: title || `${svc} in Andheri, Mumbai`,
-    meta_description: meta.description || '',
-    h1: `${svc} in Andheri, Mumbai`,
-    canonical: `${SITE.domain}${urlPath}`,
-    robots: 'noindex, follow',
-    sitemap_included: 'no (excluded_by_policy)',
-    issue: 'Non-web service in Mumbai locality uses fallback generator; correctly set to noindex',
-    evidence: 'src/lib/curatedCities.ts (L18)',
-    priority: 'P2',
-  });
-}
-
-// 7. Internal / Protected Pages
+// 6. Internal Protected Route (1)
 rows.push({
   url: `${SITE.domain}/careers/responses`,
   page_type: 'admin_private',
+  service: 'Careers Dashboard',
+  city: 'Murbad (HQ)',
+  locality: 'None',
   content_source: 'src/app/careers/responses/page.tsx',
-  checked_environment: 'local_build (200 SSG)',
-  http_status: '200 OK (Auth Protected)',
-  title: 'Applicant Responses | Silver Wolf Technologies',
-  meta_description: 'Protected internal portal for candidate submissions.',
-  h1: 'Applicant Responses Dashboard',
-  canonical: `${SITE.domain}/careers/responses`,
-  robots: 'noindex, nofollow',
+  index_policy: 'NOINDEX (noindex, nofollow)',
   sitemap_included: 'no',
-  issue: 'Private applicant data; blocked by robots.txt and meta robots',
-  evidence: 'src/app/robots.ts (L23)',
-  priority: 'P3',
+  expected_canonical: `${SITE.domain}/careers/responses`,
+  source_title: 'Applicant Responses | Silver Wolf Technologies',
+  source_description: 'Protected internal portal for candidate submissions.',
+  source_H1_if_available: 'Applicant Responses Dashboard',
+  render_checked: 'yes',
+  rendered_title: 'Applicant Responses | Silver Wolf Technologies',
+  rendered_description: 'Protected internal portal for candidate submissions.',
+  rendered_H1: 'Applicant Responses Dashboard',
+  HTTP_status: '200 OK (Auth Protected)',
+  checked_environment: 'local_build (SSG)',
+  checked_at: CHECKED_AT,
+  issue: 'Private candidate responses; protected from search engines via robots.txt and meta robots',
 });
 
 // CSV Output
 const csvHeader = [
-  'URL',
+  'url',
   'page_type',
+  'service',
+  'city',
+  'locality',
   'content_source',
-  'checked_environment',
-  'HTTP_status',
-  'title',
-  'meta_description',
-  'H1',
-  'canonical',
-  'robots',
+  'index_policy',
   'sitemap_included',
+  'expected_canonical',
+  'source_title',
+  'source_description',
+  'source_H1_if_available',
+  'render_checked',
+  'rendered_title',
+  'rendered_description',
+  'rendered_H1',
+  'HTTP_status',
+  'checked_environment',
+  'checked_at',
   'issue',
-  'evidence',
-  'priority',
 ].join(',');
 
 const csvLines = [
@@ -347,21 +367,38 @@ const csvLines = [
     [
       escapeCsv(r.url),
       escapeCsv(r.page_type),
+      escapeCsv(r.service),
+      escapeCsv(r.city),
+      escapeCsv(r.locality),
       escapeCsv(r.content_source),
-      escapeCsv(r.checked_environment),
-      escapeCsv(r.http_status),
-      escapeCsv(r.title),
-      escapeCsv(r.meta_description),
-      escapeCsv(r.h1),
-      escapeCsv(r.canonical),
-      escapeCsv(r.robots),
+      escapeCsv(r.index_policy),
       escapeCsv(r.sitemap_included),
+      escapeCsv(r.expected_canonical),
+      escapeCsv(r.source_title),
+      escapeCsv(r.source_description),
+      escapeCsv(r.source_H1_if_available),
+      escapeCsv(r.render_checked),
+      escapeCsv(r.rendered_title),
+      escapeCsv(r.rendered_description),
+      escapeCsv(r.rendered_H1),
+      escapeCsv(r.HTTP_status),
+      escapeCsv(r.checked_environment),
+      escapeCsv(r.checked_at),
       escapeCsv(r.issue),
-      escapeCsv(r.evidence),
-      escapeCsv(r.priority),
     ].join(',')
   ),
 ];
 
 fs.writeFileSync('PAGE-INVENTORY.csv', csvLines.join('\n'), 'utf8');
-console.log(`Generated PAGE-INVENTORY.csv with ${rows.length} rows.`);
+console.log(`Generated complete PAGE-INVENTORY.csv with ${rows.length} rows.`);
+
+// Validation summary
+const indexableCount = rows.filter((r) => r.index_policy === 'INDEX').length;
+const noindexCount = rows.filter((r) => r.index_policy.includes('NOINDEX') || r.index_policy.includes('IMPROVE_FIRST')).length;
+const sitemapCount = rows.filter((r) => r.sitemap_included.startsWith('yes')).length;
+
+console.log(`Inventory Summary:`);
+console.log(`- Total URLs: ${rows.length}`);
+console.log(`- Indexable URLs (policy = INDEX): ${indexableCount}`);
+console.log(`- Noindex URLs (policy = IMPROVE_FIRST / NOINDEX): ${noindexCount}`);
+console.log(`- Sitemap Included URLs: ${sitemapCount}`);

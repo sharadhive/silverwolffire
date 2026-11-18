@@ -7,6 +7,7 @@ import logo from "@/assets/logo.png";
 import { SERVICES, SITE, CITIES, SUB_CITIES, citySlug } from "@/data/site";
 import { Mail, Phone, Globe, ChevronDown, ChevronUp, MapPin, ArrowRight, MessageCircle, Sparkles, Send, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { trackWhatsAppClick, trackPhoneClick } from "@/lib/whatsapp";
 
 const dev = SERVICES.filter((s) => s.category === "Development").slice(0, 5);
 const mkt = SERVICES.filter((s) => s.category === "Marketing").slice(0, 4);
@@ -129,7 +130,13 @@ export const Footer = () => {
                 </Link>
               </Button>
               <Button asChild variant="whatsapp" size="xl" className="w-full">
-                <a href={`https://wa.me/${SITE.whatsapp}`} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2">
+                <a
+                  href={`https://wa.me/${SITE.whatsapp}`}
+                  onClick={() => trackWhatsAppClick({ ctaLocation: 'footer_pre_cta_whatsapp', path: pathname })}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center justify-center gap-2"
+                >
                   <MessageCircle className="h-4.5 w-4.5" />
                   <span>Quick WhatsApp Chat</span>
                 </a>
@@ -175,6 +182,7 @@ export const Footer = () => {
 
               <a
                 href={`tel:${SITE.phoneRaw}`}
+                onClick={() => trackPhoneClick({ ctaLocation: 'footer_phone', path: pathname })}
                 className="flex items-center gap-3 text-sm text-slate-700 hover:text-primary transition-colors group"
               >
                 <div className="h-8 w-8 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
