@@ -7,7 +7,9 @@ import { safeJsonLd } from '@/lib/jsonLd';
 const product = PRODUCT_PLATFORMS.find((p) => p.slug === 'crm')!;
 
 export const metadata: Metadata = {
-  title: 'Custom CRM Platform | Sales & Pipeline Software India | Silver Wolf Technologies',
+  title: {
+    absolute: 'Custom CRM Platform | Sales & Pipeline Software India | Silver Wolf Technologies',
+  },
   description:
     'Custom CRM development for sales teams, agencies, and SMEs in India. Visual pipeline stages, automated WhatsApp lead routing, and quotation tracking without monthly per-seat licensing.',
   alternates: {

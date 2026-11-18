@@ -60,17 +60,24 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     description = description.slice(0, 152).replace(/[\s,.;:—-]+$/, '') + '...';
   }
 
-  const title = `${service.title} Services in India | ${SITE.shortName}`;
+  // Prevent "SEO Services Services" duplication: check if title already ends with "Services"
+  const serviceHeading = service.title.toLowerCase().endsWith("services")
+    ? service.title
+    : `${service.title} Services`;
+
+  const fullTitle = `${serviceHeading} in India | ${SITE.name}`;
 
   return {
-    title,
+    title: {
+      absolute: fullTitle,
+    },
     description,
     alternates: {
       canonical: "https://www.silverwolftechnologies.in/services/" + params.slug
     },
     openGraph: {
       images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "Silver Wolf Technologies" }],
-      title: `${service.title} Company in India | ${SITE.name}`,
+      title: `${serviceHeading} Company in India | ${SITE.name}`,
       description,
       url: "https://www.silverwolftechnologies.in/services/" + params.slug
     }

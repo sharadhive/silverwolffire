@@ -1,5 +1,6 @@
 import { chennaiData } from "../data/locations/chennai";
 import { mumbaiData } from "../data/locations/mumbai";
+import { bangaloreData } from "../data/locations/bangalore";
 import { AreaData, CityData } from "../data/locations/types";
 import { generateFallbackAreaData } from "./contentGenerator";
 import { cityFromSlug, subCityFromSlug } from "../data/site";
@@ -14,6 +15,7 @@ import { cityFromSlug, subCityFromSlug } from "../data/site";
 const ALL_CITIES: Record<string, CityData> = {
   chennai: chennaiData,
   mumbai: mumbaiData,
+  bangalore: bangaloreData,
 };
 
 export function getCityData(citySlug: string): CityData | undefined {

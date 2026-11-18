@@ -36,8 +36,9 @@ import { CITIES, citySlug } from "../data/site";
  * therefore safe to index. Keep this list honest — it is the whole point.
  */
 export const CURATED_CITIES: ReadonlySet<string> = new Set([
-  "chennai", // src/data/locations/chennai.ts — 24 areas
-  "mumbai",  // src/data/locations/mumbai.ts  — 36 areas
+  "chennai",   // src/data/locations/chennai.ts   — 24 areas
+  "mumbai",    // src/data/locations/mumbai.ts    — 36 areas
+  "bangalore", // src/data/locations/bangalore.ts — 25 areas
 ]);
 
 /**

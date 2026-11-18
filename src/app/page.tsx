@@ -1,5 +1,6 @@
 import { Hero } from "@/components/site/Hero";
 import { ProductPlatforms } from "@/components/site/ProductPlatforms";
+import { SolutionFinder } from "@/components/site/SolutionFinder";
 import { Services } from "@/components/site/Services";
 import { WhyUs } from "@/components/site/WhyUs";
 import { Portfolio } from "@/components/site/Portfolio";
@@ -74,6 +75,7 @@ export default function Home() {
       />
       <Hero />
       <ProductPlatforms />
+      <SolutionFinder />
       <Services />
       <WhyUs />
       <Portfolio />

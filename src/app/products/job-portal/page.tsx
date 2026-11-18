@@ -7,7 +7,9 @@ import { safeJsonLd } from '@/lib/jsonLd';
 const product = PRODUCT_PLATFORMS.find((p) => p.slug === 'job-portal')!;
 
 export const metadata: Metadata = {
-  title: 'Job Board & Recruitment Portal Software India | Silver Wolf Technologies',
+  title: {
+    absolute: 'Job Board & Recruitment Portal Software India | Silver Wolf Technologies',
+  },
   description:
     'Custom job board software, applicant tracking systems (ATS), and recruitment platforms. Candidate portals, resume parsing, job listing feeds, and employer dashboards without recurring subscription fees.',
   alternates: {

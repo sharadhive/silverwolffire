@@ -7,7 +7,9 @@ import { safeJsonLd } from '@/lib/jsonLd';
 const product = PRODUCT_PLATFORMS.find((p) => p.slug === 'attendance-system')!;
 
 export const metadata: Metadata = {
-  title: 'Location & Photo-Based Attendance Software India | Silver Wolf Technologies',
+  title: {
+    absolute: 'Location & Photo-Based Attendance Software India | Silver Wolf Technologies',
+  },
   description:
     'Real-time employee attendance tracking with selfie photo verification and GPS geolocation tagging. Anti-spoofing controls, shift scheduling, leave workflows, and payroll-ready exports without biometric hardware.',
   alternates: {

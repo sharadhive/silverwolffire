@@ -7,7 +7,9 @@ import { safeJsonLd } from '@/lib/jsonLd';
 const product = PRODUCT_PLATFORMS.find((p) => p.slug === 'lms')!;
 
 export const metadata: Metadata = {
-  title: 'Custom LMS Platform | Learning Management System in India | Silver Wolf Technologies',
+  title: {
+    absolute: 'Custom LMS Platform | Learning Management System in India | Silver Wolf Technologies',
+  },
   description:
     'Custom Learning Management System (LMS) for educational institutes, coaching centers, and corporate training. Student portals, quizzes, certificates, and live classes without per-student SaaS fees.',
   alternates: {

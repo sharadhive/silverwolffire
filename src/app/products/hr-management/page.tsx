@@ -7,7 +7,9 @@ import { safeJsonLd } from '@/lib/jsonLd';
 const product = PRODUCT_PLATFORMS.find((p) => p.slug === 'hr-management')!;
 
 export const metadata: Metadata = {
-  title: 'HR & Attendance Management Platform | Silver Wolf Technologies India',
+  title: {
+    absolute: 'HR & Attendance Management Platform India | Silver Wolf Technologies',
+  },
   description:
     'Custom HR operations, attendance tracking, and leave management portal for growing companies in India. Real-time check-ins, leave approval workflows, and payroll-ready exports without per-employee SaaS fees.',
   alternates: {

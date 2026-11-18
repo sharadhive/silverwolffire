@@ -422,19 +422,49 @@ const FAQ_SETS = [
  * and recruitment language belongs only on /careers.
  * ─────────────────────────────────────────────────────────────────────────────
  */
-const META_TEMPLATES = [
+const DEV_META_TEMPLATES = [
   `Expert {service} in {subCity}. Fast, SEO-ready builds for local businesses. Free quote in 24 hours.`,
   `Looking for {service} in {subCity}? We build high-performance, conversion-focused platforms. Talk to our senior team.`,
-  `Premium {service} for {subCity} businesses. Custom-coded, 90+ Lighthouse, locally optimised. Request a free proposal.`,
+  `Premium {service} for {subCity} businesses. Clean custom code, high performance scores, locally optimised. Request a free proposal.`,
   `{subCity} businesses trust us for {service} that rank and drive real leads. Fast builds, transparent pricing.`,
   `Scale your {subCity} business with custom {service}. Measurable results in {city}'s most competitive markets.`,
   `Need {service} in {subCity}? We build lightning-fast, SEO-driven platforms. Mobile-first and locally optimised.`,
-  `Enterprise-grade {service} for {subCity} businesses. No templates, custom code, 90+ performance scores.`,
+  `Enterprise-grade {service} for {subCity} businesses. No bloated templates, custom code, high performance standards.`,
   `Your {subCity} brand deserves a world-class digital presence. Bespoke {service} built for the local market.`,
-  `Struggling to rank in {subCity}? Technical SEO, conversion design and {service} built to win locally.`,
+  `Struggling with slow platforms in {subCity}? Technical performance, conversion design and {service} built to win locally.`,
   `{subCity}'s trusted partner for {service}. Clean custom code, mobile-first builds, local SEO from day one.`,
   `Grow your {subCity} business with {service}. We build fast, lead-generating platforms for {city} brands.`,
   `The right partner for {service} matters in {subCity}. Senior talent, transparent pricing, proven local results.`,
+];
+
+const CREATIVE_META_TEMPLATES = [
+  `Professional {service} in {subCity}. Scroll-stopping creative assets, cinematic edits and high-retention storytelling. Get a quote.`,
+  `Looking for {service} in {subCity}? We create high-converting visual assets and premium branding for ambitious brands.`,
+  `Premium {service} for {subCity} brands. Studio-grade quality, quick turnaround, and custom visual direction. Request a proposal.`,
+  `{subCity} creators and brands trust us for {service} that captivate audiences and elevate brand positioning.`,
+  `Scale your {subCity} brand presence with expert {service}. High-impact creative execution tailored for {city}'s market.`,
+  `Need {service} in {subCity}? We craft bespoke visual assets and engaging media that drive engagement and trust.`,
+  `Studio-quality {service} for {subCity} businesses. Clean design, meticulous editing, and prompt project delivery.`,
+  `Your {subCity} brand deserves standout visuals. Bespoke {service} designed to make an unforgettable impression.`,
+  `Struggling with unengaging creative content in {subCity}? Transform your visual presence with professional {service}.`,
+  `{subCity}'s dedicated creative team for {service}. Engaging assets, brand consistency, and fast revisions.`,
+  `Elevate your {subCity} business with {service}. We produce compelling visual media that turns viewers into customers.`,
+  `The right partner for {service} in {subCity}. Senior designers, transparent pricing, and polished deliverables.`,
+];
+
+const MARKETING_META_TEMPLATES = [
+  `Data-driven {service} in {subCity}. Rank higher, capture qualified buyer traffic, and scale inbound leads. Free audit in 24h.`,
+  `Looking for {service} in {subCity}? We build ROI-focused campaigns and technical SEO strategies that dominate local search.`,
+  `Premium {service} for {subCity} businesses. Transparent reporting, conversion-focused strategy, and verified ranking growth.`,
+  `{subCity} businesses trust us for {service} that rank on Google and drive real commercial enquiries.`,
+  `Scale your {subCity} customer acquisition with strategic {service}. Proven organic growth across {city}'s top sectors.`,
+  `Need {service} in {subCity}? We engineer search campaigns and growth funnels that outrank competitive market players.`,
+  `Enterprise-grade {service} for {subCity} businesses. Ethical white-hat strategies, schema optimization, and measurable ROI.`,
+  `Your {subCity} brand deserves top search visibility. Strategic {service} engineered for maximum market reach.`,
+  `Struggling to rank or generate leads in {subCity}? Technical SEO, conversion tracking, and growth marketing that delivers.`,
+  `{subCity}'s trusted partner for {service}. Data-backed strategy, weekly reporting, and sustainable organic traffic.`,
+  `Grow your {subCity} customer base with {service}. We drive qualified buyer intent for ambitious {city} companies.`,
+  `The right agency for {service} in {subCity}. Senior strategists, transparent deliverables, and proven local outcomes.`,
 ];
 
 // ─── H1 Variant Pool (10 patterns) ───────────────────────────────────────────
@@ -872,8 +902,14 @@ export function generateFallbackAreaData(city: string, subCity: string, serviceT
     answer:   fill(f.answer, vars),
   }));
 
-  // ── Meta description ──────────────────────────────────────────────────────
-  const metaTemplate = META_TEMPLATES[(hash >>> 4) % META_TEMPLATES.length];
+  // ── Meta description: Category-Aware Routing ─────────────────────────────
+  let metaPool = DEV_META_TEMPLATES;
+  if (/video|photo|graphic|design|creative|ui|ux|brand/.test(svcLower)) {
+    metaPool = CREATIVE_META_TEMPLATES;
+  } else if (/seo|marketing|social|growth|lead/.test(svcLower)) {
+    metaPool = MARKETING_META_TEMPLATES;
+  }
+  const metaTemplate = metaPool[(hash >>> 4) % metaPool.length];
   let metaDescription = fill(metaTemplate, { ...vars, service: serviceLabel });
   // Safety net only — templates are written to fit. If one ever does overflow,
   // cut on a word boundary rather than mid-word.

@@ -6,11 +6,15 @@ import { isLocalityIndexable } from "./curatedCities";
 import { INTERNATIONAL_CITY_SLUGS } from "./seo/indexPolicy";
 
 // ─── City-level title pool (intent-first, no unverified superlatives) ───────
+function withServices(svc: string): string {
+  return svc.toLowerCase().endsWith('services') ? svc : `${svc} Services`;
+}
+
 const CITY_TITLE_POOL = [
   (svc: string, city: string) => `${svc} Company in ${city}`,
   (svc: string, city: string) => `${svc} Agency Serving ${city}`,
   (svc: string, city: string) => `Custom ${svc} in ${city}`,
-  (svc: string, city: string) => `${svc} Services in ${city}`,
+  (svc: string, city: string) => `${withServices(svc)} in ${city}`,
   (svc: string, city: string) => /dev|code|software|web|app|saas|crm|tech/.test(svc.toLowerCase()) ? `${svc} Developers in ${city}` : `${svc} Experts in ${city}`,
   (svc: string, city: string) => `${svc} for ${city} Businesses`,
   (svc: string, city: string) => `${svc} Solutions in ${city}`,

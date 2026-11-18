@@ -25,7 +25,9 @@ import {
 import { Button } from '@/components/ui/button';
 
 export const metadata: Metadata = {
-  title: 'Custom LMS Development Services India | Silver Wolf Technologies',
+  title: {
+    absolute: 'Custom LMS Development Services India | Silver Wolf Technologies',
+  },
   description:
     'Custom LMS development for educational institutes, coaching centers, and corporate L&D teams in India. Tailored course engines, video streaming, and assessments with 3 months free maintenance.',
   alternates: {

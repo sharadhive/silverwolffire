@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
 import {
   CheckCircle2, ArrowRight, ShieldCheck, Zap, Phone, MessageCircle,
-  Sparkles, Layers, ChevronRight, HelpCircle, Laptop, Clock, Server
+  Sparkles, Layers, ChevronRight, HelpCircle, Laptop, Clock, Server,
+  MonitorCheck, Sliders, Database, Eye
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SITE, ProductPlatform } from '@/data/site';
@@ -28,6 +30,8 @@ interface ProductDetailProps {
 }
 
 export function ProductDetailPage({ product, faqs, comparison, crossLink }: ProductDetailProps) {
+  const [activeWalkthroughTab, setActiveWalkthroughTab] = useState<'user' | 'admin' | 'architecture'>('user');
+
   const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(
     `Hello Silver Wolf Technologies, I would like to discuss implementing your ${product.title}.`
   )}`;
@@ -168,6 +172,108 @@ export function ProductDetailPage({ product, faqs, comparison, crossLink }: Prod
                 <h4 className="text-sm font-bold text-slate-900 leading-snug">{feature}</h4>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Illustrative Walkthrough & Architecture Tour */}
+        <div className="space-y-8 bg-slate-50/80 rounded-3xl p-6 md:p-10 border border-slate-200">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary flex items-center justify-center gap-2">
+              <Eye className="h-3.5 w-3.5" />
+              <span>Interactive Demonstration & UI Architecture</span>
+            </span>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Explore the Platform in Action
+            </h2>
+            <p className="text-slate-600 text-xs sm:text-sm">
+              Illustrative walkthrough of primary workflows, managerial controls, and deployment architecture.
+            </p>
+          </div>
+
+          {/* Tab Selector */}
+          <div className="flex flex-wrap justify-center gap-2 max-w-md mx-auto p-1 bg-slate-200/80 rounded-2xl">
+            <button
+              type="button"
+              onClick={() => setActiveWalkthroughTab('user')}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                activeWalkthroughTab === 'user' ? 'bg-white text-primary shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <MonitorCheck className="h-3.5 w-3.5" />
+              <span>User Experience</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveWalkthroughTab('admin')}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                activeWalkthroughTab === 'admin' ? 'bg-white text-primary shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Sliders className="h-3.5 w-3.5" />
+              <span>Admin Operations</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveWalkthroughTab('architecture')}
+              className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                activeWalkthroughTab === 'architecture' ? 'bg-white text-primary shadow-xs' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Database className="h-3.5 w-3.5" />
+              <span>Architecture & Data</span>
+            </button>
+          </div>
+
+          {/* Active Tab Content Card */}
+          <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-sm grid md:grid-cols-12 gap-8 items-center">
+            <div className="md:col-span-7 space-y-4">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-0.5 rounded-md">
+                {activeWalkthroughTab === 'user' && 'Step 1: End-User & Client Experience'}
+                {activeWalkthroughTab === 'admin' && 'Step 2: Operational Governance & Manager Portal'}
+                {activeWalkthroughTab === 'architecture' && 'Step 3: Edge Cloud & Data Sovereignty'}
+              </span>
+
+              <h3 className="text-xl font-bold text-slate-900">
+                {activeWalkthroughTab === 'user' && `Frictionless, Mobile-First ${product.title} Interface`}
+                {activeWalkthroughTab === 'admin' && 'Real-Time Governance, Audit Logs & Instant Exports'}
+                {activeWalkthroughTab === 'architecture' && 'Enterprise Node.js Backend with Self-Hosted Data Sovereignty'}
+              </h3>
+
+              <p className="text-slate-600 text-sm leading-relaxed">
+                {activeWalkthroughTab === 'user' &&
+                  `Users access a streamlined, lightweight interface optimized for sub-second responses on smartphone browsers and desktops. Designed with zero cognitive overload, ensuring high adoption rates without requiring end-user training.`}
+                {activeWalkthroughTab === 'admin' &&
+                  `Managers and leadership enjoy complete visibility with visual status boards, granular role-based permissions (RBAC), automated alerts, and instant 1-click exports to CSV, Excel, or internal reporting formats.`}
+                {activeWalkthroughTab === 'architecture' &&
+                  `Engineered with Next.js App Router and Node.js with complete database isolation. Deploy on your preferred AWS, GCP, or Vercel infrastructure. Zero vendor lock-in, zero third-party telemetry.`}
+              </p>
+
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Performance Budget</span>
+                  <span className="text-xs font-bold text-slate-800">Sub-2s Mobile Page Load</span>
+                </div>
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
+                  <span className="text-[10px] font-bold uppercase text-slate-400 block">Codebase Ownership</span>
+                  <span className="text-xs font-bold text-slate-800">100% Full IP Transfer</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="md:col-span-5 relative">
+              <div className="rounded-xl overflow-hidden border border-slate-200 shadow-md bg-slate-950 group">
+                <img
+                  src={product.image}
+                  alt={`${product.title} Illustrative UI Workflow`}
+                  width={600}
+                  height={400}
+                  className="w-full h-auto object-cover opacity-90 group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className="p-2.5 bg-slate-900 text-[10px] font-medium text-slate-300 text-center">
+                  Illustrative Platform Workflow & UI Architecture
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 

@@ -399,17 +399,24 @@ export default function ServiceDetailClient({
             {/* Main Hero Content */}
             <div className="max-w-4xl">
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">{service.category}</span>
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mt-4 mb-6 leading-tight">
-                {areaData?.h1Variant ? (
-                  <>{areaData.h1Variant}</>
-                ) : subCity ? (
-                  <>Custom <span className="text-gradient">{service.title}</span> in {subCity}, {city}</>
-                ) : city ? (
-                  <>Custom <span className="text-gradient">{service.title}</span> Services in {city}</>
-                ) : (
-                  <>{service.title} <span className="text-gradient">that drives growth</span></>
-                )}
-              </h1>
+              {(() => {
+                const serviceHeading = service.title.toLowerCase().endsWith("services")
+                  ? service.title
+                  : `${service.title} Services`;
+                return (
+                  <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mt-4 mb-6 leading-tight">
+                    {areaData?.h1Variant ? (
+                      <>{areaData.h1Variant}</>
+                    ) : subCity ? (
+                      <>Custom <span className="text-gradient">{serviceHeading}</span> in {subCity}, {city}</>
+                    ) : city ? (
+                      <>Custom <span className="text-gradient">{serviceHeading}</span> in {city}</>
+                    ) : (
+                      <>{service.title} <span className="text-gradient">that drives growth</span></>
+                    )}
+                  </h1>
+                );
+              })()}
               <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-3xl leading-relaxed">
                 {areaData ? areaData.intro : cityData ? cityData.description : service.longDescription}
               </p>
