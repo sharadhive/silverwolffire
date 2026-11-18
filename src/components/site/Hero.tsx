@@ -92,6 +92,7 @@ const BentoShowcaseCard = ({
 
 export const Hero = () => {
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [formName, setFormName] = useState("");
   const [formEmail, setFormEmail] = useState("");
   const [formPhone, setFormPhone] = useState("");
@@ -108,6 +109,8 @@ export const Hero = () => {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (loading || submitted) return;
+
     const formElement = e.currentTarget;
     const fd = new FormData(formElement);
     const payload = {
@@ -135,11 +138,15 @@ export const Hero = () => {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        toast.error(data.error || "Submission failed. Please try again.");
+        toast.error(
+          data.error || "Web dispatch is currently unavailable. Please click 'WhatsApp Brief' below to send your message directly."
+        );
         setLoading(false);
+        // Form inputs preserved on failure so user does not lose their typed brief
         return;
       }
 
+      setSubmitted(true);
       toast.success(data.message || "Proposal submitted! Our senior team will connect within 24 hours.");
       formElement.reset();
       setFormName("");
@@ -155,7 +162,7 @@ export const Hero = () => {
         });
       }
     } catch {
-      toast.error("Network error. Please try again or chat with us directly on WhatsApp.");
+      toast.error("Network error connecting to lead server. Please click 'WhatsApp Brief' to send your message directly.");
     } finally {
       setLoading(false);
     }
@@ -306,7 +313,7 @@ export const Hero = () => {
                       name="phone"
                       value={formPhone}
                       onChange={(e) => setFormPhone(e.target.value)}
-                      placeholder="+91 ..."
+                      placeholder="e.g. +91 98765 43210"
                       className="mt-1 bg-slate-50 border-slate-200 h-8.5 text-xs"
                     />
                   </div>

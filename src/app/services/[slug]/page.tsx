@@ -2,7 +2,7 @@ import { generateServiceMetadata } from "@/lib/serviceMetadata";
 import ServiceDetailClient from "./ServiceDetailClient";
 import SchemaMarkup from "@/components/SchemaMarkup";
 import { safeJsonLd } from "@/lib/jsonLd";
-import { SERVICES } from "@/data/site";
+import { SERVICES, SITE } from "@/data/site";
 import { notFound } from "next/navigation";
 import { serviceParams } from "@/lib/staticParams";
 
@@ -54,26 +54,24 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   // Must 404 here, not only in the page component — see lib/serviceMetadata.ts.
   if (!service) notFound();
 
-  // Kept under ~155 characters so Google shows it without truncation.
-  let description = "Expert " + service.title + " in India from Silver Wolf " +
-    "Technologies — 10+ years, transparent pricing, reply within 24 hours. " +
-    "Get a free quote.";
+  // Distinct, service-specific description kept under 155 characters for search snippets
+  let description = `${service.short} Senior engineering & delivery from Silver Wolf Tech.`;
   if (description.length > 155) {
-    description = "Expert " + service.title + " in India — 10+ years, " +
-      "transparent pricing, reply within 24 hours. Get a free quote.";
+    description = description.slice(0, 152).replace(/[\s,.;:—-]+$/, '') + '...';
   }
 
+  const title = `${service.title} Services in India | ${SITE.shortName}`;
+
   return {
-    title: service.title + " in India",
+    title,
     description,
     alternates: {
       canonical: "https://www.silverwolftechnologies.in/services/" + params.slug
     },
     openGraph: {
-    images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "Silver Wolf Technologies" }],
-      title: service.title + " Company in India | Silver Wolf Technologies",
-      description: "Senior team. Clean code. Measurable results. " +
-        "10+ years delivering " + service.title + " for global clients.",
+      images: [{ url: "/og-image.jpg", width: 1200, height: 630, alt: "Silver Wolf Technologies" }],
+      title: `${service.title} Company in India | ${SITE.name}`,
+      description,
       url: "https://www.silverwolftechnologies.in/services/" + params.slug
     }
   };
@@ -118,8 +116,8 @@ export default function ServicePage({ params }: { params: { slug: string } }) {
         </p>
         <p>
           To get a free consultation for {service.title} in India, contact
-          Silver Wolf Technologies at info@silverwolftechnologies.in or
-          call +91-9845953801. Response guaranteed within 24 hours.
+          Silver Wolf Technologies at {SITE.email} or
+          call {SITE.phone}. Response guaranteed within 24 hours.
         </p>
           </article>
         </div>

@@ -25,8 +25,8 @@ const PORTFOLIO_LINKS: Record<string, { type: "linkedin" | "portfolio" | "behanc
   ],
 };
 
-/** WhatsApp number for Divakar (without +) */
-const DIVAKAR_WHATSAPP = "919373922206";
+/** WhatsApp number for Divakar (centralized from SITE config) */
+const DIVAKAR_WHATSAPP = SITE.teamMemberWhatsapp;
 
 /** Popup form types */
 type FormMode = "profile" | "call";
@@ -194,7 +194,7 @@ const WhatsAppRedirectPopup = ({
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 XXXXX XXXXX"
+                  placeholder="e.g. +91 98765 43210"
                   required
                   className="w-full px-4 py-3 rounded-xl text-sm text-white placeholder:text-zinc-600 outline-none transition-all duration-200 focus:ring-2 focus:ring-emerald-500/40"
                   style={{
@@ -405,7 +405,7 @@ export default function ServiceDetailClient({
                 ) : subCity ? (
                   <>Custom <span className="text-gradient">{service.title}</span> in {subCity}, {city}</>
                 ) : city ? (
-                  <>Best <span className="text-gradient">{service.title}</span> Agency in {city}</>
+                  <>Custom <span className="text-gradient">{service.title}</span> Services in {city}</>
                 ) : (
                   <>{service.title} <span className="text-gradient">that drives growth</span></>
                 )}

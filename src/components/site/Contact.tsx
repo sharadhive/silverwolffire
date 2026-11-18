@@ -20,6 +20,7 @@ type Props = { compact?: boolean; presetService?: string };
 
 export const Contact = ({ compact = false, presetService }: Props) => {
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -36,6 +37,8 @@ export const Contact = ({ compact = false, presetService }: Props) => {
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (loading || submitted) return;
+
     const formElement = e.currentTarget;
     const fd = new FormData(formElement);
     const payload = {
@@ -63,11 +66,15 @@ export const Contact = ({ compact = false, presetService }: Props) => {
       const data = await res.json();
 
       if (!res.ok || !data.success) {
-        toast.error(data.error || "Submission failed. Please try again.");
+        toast.error(
+          data.error || "Web dispatch is currently unavailable. Please click 'Chat on WhatsApp Directly' to send your brief."
+        );
         setLoading(false);
+        // Form inputs are preserved on failure so the user does not lose their typed brief
         return;
       }
 
+      setSubmitted(true);
       toast.success(data.message || "Thanks! Our senior team will reach out within 24 hours.");
       formElement.reset();
       setName("");
@@ -84,7 +91,7 @@ export const Contact = ({ compact = false, presetService }: Props) => {
         });
       }
     } catch {
-      toast.error("Network error. Please try again or chat with us directly on WhatsApp.");
+      toast.error("Network error connecting to lead server. Please click 'Chat on WhatsApp Directly' to send your brief.");
     } finally {
       setLoading(false);
     }
@@ -194,7 +201,7 @@ export const Contact = ({ compact = false, presetService }: Props) => {
                 type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                placeholder="+91 98459 53801"
+                placeholder="e.g. +91 98765 43210"
                 className="mt-1.5 bg-slate-50 border-slate-200 h-10 text-xs"
                 maxLength={20}
               />

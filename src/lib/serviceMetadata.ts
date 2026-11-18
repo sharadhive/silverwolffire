@@ -10,7 +10,7 @@ const CITY_TITLE_POOL = [
   (svc: string, city: string) => `${svc} Agency Serving ${city}`,
   (svc: string, city: string) => `Custom ${svc} in ${city}`,
   (svc: string, city: string) => `${svc} Services in ${city}`,
-  (svc: string, city: string) => `${svc} Developers in ${city}`,
+  (svc: string, city: string) => /dev|code|software|web|app|saas|crm|tech/.test(svc.toLowerCase()) ? `${svc} Developers in ${city}` : `${svc} Experts in ${city}`,
   (svc: string, city: string) => `${svc} for ${city} Businesses`,
   (svc: string, city: string) => `${svc} Solutions in ${city}`,
   (svc: string, city: string) => `${svc} Specialists Serving ${city}`,
@@ -67,7 +67,7 @@ export function generateServiceMetadata(slug: string, citySlugParam?: string, su
     const h = simpleHash(city, service.title);
     titleBase = CITY_TITLE_POOL[h % CITY_TITLE_POOL.length](service.title, city);
   } else {
-    titleBase = `${service.title} Services`;
+    titleBase = service.title.endsWith("Services") ? service.title : `${service.title} Services`;
   }
   /**
    * Adaptive brand suffix. Google renders roughly 60 characters of a title and

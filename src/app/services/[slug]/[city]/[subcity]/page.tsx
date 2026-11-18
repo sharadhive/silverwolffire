@@ -1,6 +1,6 @@
 import { generateServiceMetadata } from "@/lib/serviceMetadata";
 import ServiceDetailClient from "../../ServiceDetailClient";
-import { SERVICES, cityFromSlug, subCityFromSlug, citySlug } from "@/data/site";
+import { SERVICES, cityFromSlug, subCityFromSlug, citySlug, SITE } from "@/data/site";
 import { getAreaData } from "@/lib/locationData";
 import { notFound, permanentRedirect } from "next/navigation";
 import { serviceSubCityParams } from "@/lib/staticParams";
@@ -60,15 +60,14 @@ export default function ServiceSubCityPage({ params }: { params: { slug: string;
     "serviceType": service.title,
     "url": pageUrl,
     "description": "Silver Wolf Technologies provides " + service.title +
-      " for businesses in " + subCity + ", " + city + ". Senior team with 10+ years " +
-      "experience, transparent pricing, and a reply within 24 hours.",
+      " for businesses in " + subCity + ", " + city + ". Experienced senior team, transparent pricing, and a reply within 24 hours.",
     "provider": {
       "@type": "Organization",
       "@id": "https://www.silverwolftechnologies.in/#organization",
-      "name": "Silver Wolf Technologies",
-      "url": "https://www.silverwolftechnologies.in",
-      "telephone": "+91-9845953801",
-      "email": "info@silverwolftechnologies.in"
+      "name": SITE.name,
+      "url": SITE.domain,
+      "telephone": SITE.phoneRaw,
+      "email": SITE.email
     },
     "areaServed": {
       "@type": "Place",

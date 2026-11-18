@@ -14,14 +14,24 @@ export const SITE = {
   domain: "https://www.silverwolftechnologies.in",
   email: "info@silverwolftechnologies.in", // EMAIL_PLACEHOLDER
   privacyEmail: "privacy@silverwolftechnologies.in", // PRIVACY_CONTACT_PLACEHOLDER
-  phone: "+91 98459 53801", // PHONE_NUMBER_PLACEHOLDER
+  phone: "+91 98459 53801", // Central business contact: PHONE_NUMBER_PLACEHOLDER
   phoneRaw: "+919845953801",
-  whatsapp: "919845953801", // WHATSAPP_NUMBER_PLACEHOLDER
+  whatsapp: "919845953801", // Central business WhatsApp: WHATSAPP_NUMBER_PLACEHOLDER
   whatsappDisplay: "+91 98459 53801",
+  /**
+   * Operational team member direct WhatsApp (Divakar Prajapati - Creative/Operations).
+   * Classified as Team Member Destination; requires owner confirmation whether all
+   * inquiries should route centrally or retain this operational team channel.
+   */
+  teamMemberWhatsapp: "919373922206",
   address: "Murbad, Maharashtra 421401, India", // BUSINESS_ADDRESS_PLACEHOLDER
   presence: "Remote · Worldwide (HQ: Murbad, India)",
   founded: 2015,
   yearsExperience: 10,
+  /** Verified Google Analytics 4 Measurement ID configured in layout.tsx */
+  gaMeasurementId: "G-FP5DCG2C90",
+  /** Verified Microsoft Clarity tracking tag configured in layout.tsx */
+  clarityId: "x68rj8i1yf",
   socials: {
     linkedin: "https://www.linkedin.com/company/silver-wolf-technologies",
     instagram: "https://www.instagram.com/silverwolftechnologies",
@@ -252,34 +262,35 @@ export const SERVICES: Service[] = [
   {
     slug: "crm-development",
     title: "CRM Development",
-    short: "Custom CRM platforms, HR portals, attendance management systems, and business process automation — built around your workflows, not someone else's.",
+    short: "Bespoke CRM software engineering, sales pipeline automation, custom client portals, and legacy system migrations built around your exact business logic.",
     category: "Development",
     icon: "Database",
-    keywords: ["custom crm development", "crm software India", "sales automation", "business process automation", "hr portal development", "attendance management system", "employee management system"],
+    keywords: ["custom crm development", "crm software India", "sales automation", "business process automation", "custom client portal", "crm migration services"],
     longDescription:
-      "Off-the-shelf CRMs force you to bend your process around their software. We do the opposite — building custom CRM platforms, HR portals, employee management dashboards, and attendance tracking systems around how your team actually operates. From lead pipeline automation to employee lifecycle management, we've delivered enterprise-grade solutions for businesses managing hundreds of team members and thousands of client records.",
+      "Off-the-shelf CRMs force you to bend your process around someone else's software while charging recurring per-user license fees. We engineer bespoke CRM platforms, custom sales workflows, quotation pipelines, and client portals built precisely around how your organization operates — with 100% codebase ownership and zero per-seat licensing.",
     bullets: [
-      "Custom sales pipelines, lead scoring and deal automation",
-      "Employee management portals with attendance and leave tracking",
-      "HR dashboards with payroll integration and document management",
-      "WhatsApp, email and call integration for CRM workflows",
-      "Role-based access, audit logs and advanced reporting",
+      "Custom sales pipelines, lead scoring and deal stages",
+      "Official WhatsApp Business API and email automation",
+      "Quotation generation, contract tracking and invoicing hooks",
+      "Role-based access control (RBAC) with granular security permissions",
+      "Data migration from legacy systems (Zoho, Salesforce, Excel)",
+      "Dedicated deployment to your private cloud database (Postgres, MongoDB)",
     ],
-    deliverables: ["Web + mobile CRM application", "Admin dashboard with analytics", "Employee / HR management module", "Data migration + team training"],
+    deliverables: ["Custom CRM web application", "Admin and sales rep dashboards", "Data migration scripts & execution", "API documentation & user training"],
     process: [
-      { step: "Map", detail: "Audit current sales, HR and operational workflows" },
-      { step: "Design", detail: "Pipeline UX, employee portal, automation rules, integrations" },
-      { step: "Build", detail: "Modular development with role-based access and real-time dashboards" },
-      { step: "Adopt", detail: "Data migration, training, ongoing iteration and support" },
+      { step: "Map", detail: "Audit current sales processes, team roles, and data models" },
+      { step: "Design", detail: "Pipeline architecture, quotation rules, and UI wireframes" },
+      { step: "Build", detail: "Component development with weekly sprint demos and role access testing" },
+      { step: "Deploy", detail: "Secure database migration, team onboarding, and ongoing technical support" },
     ],
     contentSections: [
       {
-        heading: "Enterprise-Grade CRM & Business Systems",
-        body: "Silver Wolf Technologies builds custom CRM and enterprise management systems that go far beyond basic contact databases. Our solutions include fully integrated employee management portals, attendance tracking systems with biometric and geo-fencing support, HR dashboards with leave management, payroll integration, and document workflows. Whether you need a sales CRM to manage your pipeline or an internal operations platform to handle 500+ employees, we engineer solutions that scale with your organization.",
+        heading: "Bespoke CRM Engineering vs. Ready-to-Deploy Platform",
+        body: "Silver Wolf Technologies provides two distinct CRM options based on your timeline and complexity. If your business needs a ready-to-deploy sales pipeline management system with Kanban boards and automated WhatsApp routing, review our standalone Silver Wolf CRM Platform at /products/crm. If your business requires custom data modeling, multi-department back-office automation, ERP integrations (SAP, Tally, Zoho), or legacy database overhaul, our senior engineers build bespoke enterprise systems from the ground up.",
       },
       {
-        heading: "HR Portals & Attendance Management",
-        body: "We've built production-grade HR portals and attendance management systems for organizations managing large distributed teams. Features include real-time attendance tracking, shift management, leave approval workflows, employee self-service portals, birthday and anniversary notifications, automated WhatsApp alerts for approvals, and comprehensive reporting dashboards. Every system is built with role-based access control, ensuring that administrators, managers, and employees each see exactly what they need.",
+        heading: "Enterprise Workflows & Data Sovereignty",
+        body: "Every bespoke CRM we engineer is deployed directly into your own private cloud infrastructure. You maintain complete sovereignty over customer data, contact history, and proprietary sales pipelines. Our solutions eliminate monthly per-seat subscription overhead, giving growing organizations the freedom to expand team sizes without incurring exponential SaaS software expenses.",
       },
     ],
     teamMembers: [

@@ -59,6 +59,12 @@ export async function GET() {
 
 ${serviceLines}
 
+## Software platforms & products
+
+- [LMS Platform](${SITE.domain}/products/lms): Custom Learning Management System for coaching institutes, academies, and corporate training. Modular course builder, student dashboards, quizzes, and automated certificate generation without recurring per-seat fees.
+- [Custom CRM Platform](${SITE.domain}/products/crm): Tailored customer and sales pipeline management software for agencies and service businesses. Visual Kanban pipelines, automated WhatsApp lead routing, and quotation tracking with zero monthly per-user licensing fees.
+- [HR & Attendance Platform](${SITE.domain}/products/hr-management): Unified employee operations, attendance logging, leave approval workflows, and payroll-ready exports for teams of 15 to 500+ employees.
+
 ## Locations served
 
 ${cityLines}
@@ -87,6 +93,9 @@ Senior strategists and engineers. The agency operates founder-led — no juniors
 
 - [Home](${SITE.domain}/): overview of services and approach
 - [Services](${SITE.domain}/services): all ${SERVICES.length} service lines in detail
+- [LMS Platform](${SITE.domain}/products/lms): custom learning management system platform
+- [Custom CRM Platform](${SITE.domain}/products/crm): tailored sales pipeline software platform
+- [HR & Attendance Platform](${SITE.domain}/products/hr-management): employee operations and attendance platform
 - [Portfolio](${SITE.domain}/portfolio): shipped work and case studies
 - [Locations](${SITE.domain}/locations): every city and locality served
 - [About](${SITE.domain}/about): team, history and working model

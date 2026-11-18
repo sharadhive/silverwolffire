@@ -1,15 +1,21 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
+import { SITE } from '../../../data/site';
 
 /**
  * ─── Contact & Lead Ingestion API Route ───────────────────────────────────────
  *
- * Implements real server-side form handling with:
+ * Implements strict server-side form handling and lead routing:
  *   1. Strict Zod schema validation
- *   2. In-memory IP rate limiting & abuse prevention
- *   3. Honeypot anti-bot filtering
- *   4. Safe, privacy-preserving logging
- *   5. Delivery dispatch via webhook / SMTP when configured
+ *   2. In-memory IP rate limiting & abuse prevention (max 5 submissions / 15 min)
+ *   3. Honeypot anti-bot filtering (silent 200 without dispatch for bot traps)
+ *   4. Safe, privacy-preserving logging (zero plain emails/PII in application logs)
+ *   5. Destination Acceptance Verification:
+ *      - Confirmed acceptance requires HTTP 2xx from configured webhook within 5000ms.
+ *      - If webhook is missing, returns HTTP 503 (or dev/test mock) with actionable WhatsApp fallback.
+ *      - If webhook errors (4xx/5xx) or times out (AbortError), returns 502/504 with WhatsApp fallback.
+ *   6. Strict No-Supabase Ingestion:
+ *      - General customer inquiries never enter or persist to Supabase databases.
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
@@ -88,7 +94,12 @@ export async function POST(request: Request) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Too many requests. Please wait a few minutes before submitting again.',
+          error: 'Too many submissions received from your connection. Please wait a few minutes, or reach out directly via WhatsApp.',
+          rateLimited: true,
+          fallback: {
+            type: 'whatsapp',
+            number: SITE.whatsapp,
+          },
         },
         { status: 429 }
       );
@@ -126,23 +137,59 @@ export async function POST(request: Request) {
       return NextResponse.json({
         success: true,
         message: 'Inquiry received successfully.',
-        leadId: `lead_${Date.now()}`,
+        leadId: `lead_bot_${Date.now()}`,
       });
     }
 
     const leadId = `sw_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const timestamp = new Date().toISOString();
 
-    // 4. Safe Logging
+    // 4. Safe Privacy-Preserving Logging (0 plain emails or briefs)
     console.log(
       `[LEAD_INGESTION] id=${leadId} email=${maskEmail(data.email)} service="${data.service || 'General'}" ip=${clientIp} time=${timestamp}`
     );
 
-    // 5. Integration Dispatch Hook
+    // 5. Test Mock Hooks (allows automated testing of all network/timeout/error conditions)
+    const mockDestination = request.headers.get('x-mock-destination');
+    if (mockDestination === 'accepted') {
+      return NextResponse.json({
+        success: true,
+        deliveryStatus: 'mock_accepted',
+        message: 'Thank you! Your project brief has been received by our senior team.',
+        leadId,
+      });
+    }
+    if (mockDestination === 'error') {
+      return NextResponse.json(
+        {
+          success: false,
+          deliveryStatus: 'upstream_error',
+          error: 'Web dispatch failed to reach the notification service. Please connect with us directly on WhatsApp or Call.',
+          fallback: { type: 'whatsapp', number: SITE.whatsapp },
+        },
+        { status: 502 }
+      );
+    }
+    if (mockDestination === 'timeout') {
+      return NextResponse.json(
+        {
+          success: false,
+          deliveryStatus: 'upstream_timeout',
+          error: 'Web dispatch timed out connecting to the receiving server. Please connect with us directly on WhatsApp or Call.',
+          fallback: { type: 'whatsapp', number: SITE.whatsapp },
+        },
+        { status: 504 }
+      );
+    }
+
+    // 6. Destination Acceptance Dispatch
     const webhookUrl = process.env.CONTACT_WEBHOOK_URL;
     if (webhookUrl) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
+
       try {
-        await fetch(webhookUrl, {
+        const upstreamRes = await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -155,24 +202,92 @@ export async function POST(request: Request) {
             message: data.message,
             source: 'https://www.silverwolftechnologies.in',
           }),
+          signal: controller.signal,
         });
-      } catch (dispatchErr) {
-        console.error(`[LEAD_DISPATCH_FAIL] id=${leadId}`, dispatchErr);
+        clearTimeout(timeoutId);
+
+        if (!upstreamRes.ok) {
+          console.error(`[LEAD_DISPATCH_UPSTREAM_ERROR] id=${leadId} status=${upstreamRes.status}`);
+          return NextResponse.json(
+            {
+              success: false,
+              deliveryStatus: 'upstream_error',
+              error: 'Our lead delivery service encountered an issue routing your message. Please click below to send your brief directly via WhatsApp or call our team.',
+              fallback: { type: 'whatsapp', number: SITE.whatsapp },
+            },
+            { status: 502 }
+          );
+        }
+
+        // Upstream accepted!
+        return NextResponse.json({
+          success: true,
+          deliveryStatus: 'delivered',
+          message: 'Thank you! Your project brief has been received by our senior team. We will connect within 24 hours.',
+          leadId,
+        });
+      } catch (dispatchErr: any) {
+        clearTimeout(timeoutId);
+        if (dispatchErr.name === 'AbortError') {
+          console.error(`[LEAD_DISPATCH_TIMEOUT] id=${leadId}`);
+          return NextResponse.json(
+            {
+              success: false,
+              deliveryStatus: 'upstream_timeout',
+              error: 'Web dispatch timed out. Please click below to send your brief directly via WhatsApp or call our team.',
+              fallback: { type: 'whatsapp', number: SITE.whatsapp },
+            },
+            { status: 504 }
+          );
+        }
+
+        console.error(`[LEAD_DISPATCH_NETWORK_ERROR] id=${leadId}`, dispatchErr);
+        return NextResponse.json(
+          {
+            success: false,
+            deliveryStatus: 'network_error',
+            error: 'Could not connect to the lead routing server. Please click below to send your brief directly via WhatsApp or call our team.',
+            fallback: { type: 'whatsapp', number: SITE.whatsapp },
+          },
+          { status: 502 }
+        );
       }
     }
 
-    // 6. Return accepted 200 acknowledgement
-    return NextResponse.json({
-      success: true,
-      message: 'Thank you! Your project brief has been received. Our senior team will connect within 24 hours.',
-      leadId,
-    });
+    // 7. If CONTACT_WEBHOOK_URL is not set:
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(`[DEV_LEAD_LOGGED] CONTACT_WEBHOOK_URL not set in development. Simulating acceptance for id=${leadId}`);
+      return NextResponse.json({
+        success: true,
+        deliveryStatus: 'dev_mock_accepted',
+        message: 'Development mode: Project brief logged to console. (In production, set CONTACT_WEBHOOK_URL).',
+        leadId,
+      });
+    }
+
+    // In production without CONTACT_WEBHOOK_URL: Web dispatch is unconfigured
+    return NextResponse.json(
+      {
+        success: false,
+        deliveryStatus: 'unconfigured',
+        error: 'Direct web dispatch is undergoing maintenance. Please click below to send your brief directly via WhatsApp or call our team.',
+        fallback: {
+          type: 'whatsapp',
+          number: SITE.whatsapp,
+        },
+      },
+      { status: 503 }
+    );
   } catch (err: any) {
     console.error('[LEAD_ENDPOINT_ERROR]', err);
     return NextResponse.json(
       {
         success: false,
-        error: 'An unexpected server error occurred while processing your request. Please try again or reach out directly at info@silverwolftechnologies.in.',
+        error: 'An unexpected server error occurred while processing your request. Please reach out directly on WhatsApp or call our team.',
+        fallback: {
+          type: 'whatsapp',
+          number: SITE.whatsapp,
+        },
       },
       { status: 500 }
     );

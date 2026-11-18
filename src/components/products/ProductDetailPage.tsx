@@ -17,9 +17,16 @@ interface ProductDetailProps {
     silverWolf: string;
     genericSaaS: string;
   }[];
+  crossLink?: {
+    badge: string;
+    title: string;
+    description: string;
+    href: string;
+    cta: string;
+  };
 }
 
-export function ProductDetailPage({ product, faqs, comparison }: ProductDetailProps) {
+export function ProductDetailPage({ product, faqs, comparison, crossLink }: ProductDetailProps) {
   const whatsappUrl = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(
     `Hello Silver Wolf Technologies, I would like to discuss implementing your ${product.title}.`
   )}`;
@@ -220,6 +227,29 @@ export function ProductDetailPage({ product, faqs, comparison }: ProductDetailPr
             ))}
           </div>
         </div>
+
+        {/* Contextual Service / Cross-Link Callout */}
+        {crossLink && (
+          <div className="max-w-3xl mx-auto rounded-3xl bg-slate-900 text-white p-8 sm:p-10 shadow-xl border border-slate-800 space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold tracking-wide">
+              <span>{crossLink.badge}</span>
+            </div>
+            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+              {crossLink.title}
+            </h3>
+            <p className="text-slate-300 text-sm leading-relaxed">
+              {crossLink.description}
+            </p>
+            <div className="pt-2">
+              <Button asChild variant="hero" size="lg">
+                <Link href={crossLink.href} className="inline-flex items-center gap-2 font-bold">
+                  <span>{crossLink.cta}</span>
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </div>
+        )}
 
         {/* Embedded Contact Consultation */}
         <Contact compact presetService={product.title} />

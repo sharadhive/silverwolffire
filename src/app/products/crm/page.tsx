@@ -100,6 +100,13 @@ export default function CrmPage() {
         product={product}
         faqs={CRM_FAQS}
         comparison={CRM_COMPARISON}
+        crossLink={{
+          badge: "Bespoke Engineering Services",
+          title: "Looking for Custom Enterprise CRM Development?",
+          description: "If your business requires custom database architecture, multi-department enterprise workflows, legacy CRM migration (Zoho, Salesforce to custom), or proprietary ERP integrations from scratch, explore our custom engineering services.",
+          href: "/services/crm-development",
+          cta: "View Custom CRM Development Services",
+        }}
       />
     </>
   );

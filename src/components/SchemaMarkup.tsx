@@ -1,6 +1,7 @@
 'use client';
 
 import { safeJsonLd } from "@/lib/jsonLd";
+import { SITE } from "@/data/site";
 export { safeJsonLd };
 
 interface SchemaProps {
@@ -36,7 +37,7 @@ export default function SchemaMarkup({ type, data }: SchemaProps) {
       },
       "contactPoint": {
         "@type": "ContactPoint",
-        "telephone": "+919845953801",
+        "telephone": SITE.phoneRaw,
         "contactType": "customer service",
         "areaServed": ["IN", "GB", "AE", "US", "CA", "AU", "SG"],
         "availableLanguage": ["English", "Hindi", "Marathi"]
@@ -70,7 +71,7 @@ export default function SchemaMarkup({ type, data }: SchemaProps) {
       "parentOrganization": { "@id": "https://www.silverwolftechnologies.in/#organization" },
       "image": "https://www.silverwolftechnologies.in/og-image.jpg",
       "url": "https://www.silverwolftechnologies.in",
-      "telephone": "+919845953801",
+      "telephone": SITE.phoneRaw,
       "priceRange": "₹₹",
       "address": {
         "@type": "PostalAddress",

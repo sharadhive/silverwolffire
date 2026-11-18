@@ -50,44 +50,31 @@ function hashCode(city: string, subCity: string, service: string): number {
   return h;
 }
 
-// ─── Intro Templates (12 variants) ───────────────────────────────────────────
+// ─── Intro Templates (Domain-Specific Pools) ───────────────────────────────
 // Placeholders: {city}, {subCity}, {service}, {agencyName}, {industry1}, {industry2}, {landmark}, {character}
-const INTROS = [
-  // 0 — direct, value-led
-  `If you run a business in {subCity}, you already know the stakes. The {city} market — especially around {landmark} — rewards brands that project authority online and punishes those that don't. At {agencyName}, our {service} team works exclusively with growth-focused businesses to build digital platforms that load instantly, rank prominently, and convert visitors into paying customers. We don't touch generic templates; every project starts from a blank Figma canvas and ends with clean, production-grade code. Businesses operating in {subCity}'s busy {character} corridors — whether you serve {industry1} clients or cater to the thriving {industry2} sector — deserve a website that matches the ambition behind your brand.`,
 
-  // 1 — narrative, problem-first
-  `A slow, outdated website in {subCity} isn't just an aesthetic problem — it's a revenue problem. When potential customers search for {service} providers in {city}, Google surfaces the fastest, most authoritative result first. If that's not you, it's your competitor. {agencyName} was built to fix exactly this. We engineer modern, {service} solutions for businesses embedded in {subCity}'s competitive {character} landscape — from {industry1} firms near {landmark} to fast-scaling {industry2} companies looking to capture high-intent local traffic. Our process is hands-on, our timelines are tight, and our results are measurable.`,
+// Web & Software Development Services
+const DEV_INTROS = [
+  `If you run a business in {subCity}, you already know the stakes. The {city} market — especially around {landmark} — rewards brands that project authority online and punishes those that don't. At {agencyName}, our {service} team works exclusively with growth-focused businesses to build digital platforms that load fast, rank prominently, and convert visitors into paying customers. Every project starts from tailored UI/UX and ends with clean, production-grade code. Businesses operating in {subCity}'s busy {character} corridors — whether you serve {industry1} clients or cater to the {industry2} sector — deserve technical foundations that match the ambition behind your brand.`,
+  `A slow, outdated application or web platform in {subCity} isn't just an aesthetic inconvenience — it's a direct commercial bottleneck. When potential customers search for {service} providers in {city}, performance and authority determine who gets the enquiry. {agencyName} was built to engineer reliable digital solutions for businesses embedded in {subCity}'s competitive {character} landscape — from {industry1} firms near {landmark} to fast-scaling {industry2} enterprises. Our process is hands-on, our architecture is clean, and our outcomes are measurable.`,
+  `Most digital agencies in {city} deliver generic off-the-shelf templates and call it custom engineering. We don't. At {agencyName}, our senior {service} team hand-engineers every platform we deploy — modular components, performance budgets enforced from day one, and local search signals structured specifically for the {subCity} market. Whether you operate in the {industry1} space near {landmark} or build the next major {industry2} company in {city}, we provide the technical depth to make your digital operations scale.`,
+  `Great {service} starts with understanding your operational workflows and customer intent — not generic assumptions. When we onboard {subCity} businesses, we map the exact search behaviors and technical demands of your local audience in {city}. We analyze what {industry1} buyers and {industry2} clients are searching for near {landmark}, and engineer your platform to intercept that demand at every stage. {agencyName} brings verified engineering rigor to businesses operating in {city}'s dynamic commercial corridors.`,
+];
 
-  // 2 — confident, challenger tone
-  `Most digital agencies in {city} will sell you a WordPress template and call it a custom website. We won't. At {agencyName}, our senior {service} team hand-engineers every platform we deploy — React components built from scratch, performance budgets enforced from day one, and local SEO structured specifically for the {subCity} market. Whether you are in the {industry1} space near {landmark} or building the next major {industry2} brand in {city}, we have the technical depth to make your digital presence genuinely stand out. {subCity} is competitive. Your website should be too.`,
+// Creative & Visual Design Services (Video Editing, Photo Editing, Graphic Design, UI/UX)
+const CREATIVE_INTROS = [
+  `In a dense commercial hub like {subCity}, visual communication is the fastest way to build trust and capture market share. Whether producing scroll-stopping video edits, high-converting ad creatives, or polished brand collateral near {landmark}, your assets must command attention. At {agencyName}, our creative specialists deliver platform-native {service} tailored to businesses across {subCity} and greater {city}. From {industry1} brands to fast-growing {industry2} ventures, we produce polished creative assets that elevate your market presence.`,
+  `Weak creative assets and disjointed visuals dilute brand credibility before a prospect ever speaks with your sales team. {agencyName} provides professional {service} for ambitious businesses in {subCity}'s {character} corridor. Our creative team handles end-to-end production — from concepts and storyboards to high-resolution exports formatted for social campaigns, presentations, and product showcases. We help {industry1} and {industry2} companies near {landmark} project unmistakable authority across every customer touchpoint.`,
+  `High-performance creative is about retention and conversion, not just decoration. For {subCity} businesses competing in {city}'s fast-moving market, our {service} workflows blend visual storytelling with commercial psychology. Whether you need cinematic social reels, catalog-grade product retouching, or cohesive design systems, our team delivers production-ready creative assets on predictable turnaround schedules.`,
+  `Doing business in {subCity} requires creative assets that resonate with the local market's specific aesthetic standards. {agencyName} works with {city} companies — from established {industry1} firms near {landmark} to modern {industry2} startups — delivering high-fidelity {service} that sets your brand apart from regional competitors.`,
+];
 
-  // 3 — collaborative, discovery-first
-  `Great {service} starts with understanding your customers — not your color preferences. When we onboard {subCity} businesses, we begin by mapping the specific search behaviors of your local audience in {city}. We look at what {industry1} buyers and {industry2} clients are actually typing into Google near {landmark}, and we engineer your digital presence to intercept that intent at every stage. The result is a platform built around real demand — not assumptions. {agencyName} has spent years refining this approach for businesses operating in {city}'s most dynamic {character} zones, and {subCity} is no exception.`,
-
-  // 4 — stat-driven, credibility-first
-  `Over 70% of consumers research a service online before making contact. In a dense market like {subCity}, that means your website is often the first — and sometimes only — impression you make. At {agencyName}, we engineer {service} solutions built to make that impression count. We serve businesses in {city}'s {character} corridors, from established {industry1} companies near {landmark} to ambitious {industry2} startups scaling their customer base. Every site we build scores 90+ on Google Lighthouse, loads in under two seconds, and is architecturally optimized to rank for your most valuable local search terms.`,
-
-  // 5 — local-authority, geographic depth
-  `{subCity} sits at the heart of one of {city}'s most active {character} zones. Businesses here — spanning {industry1}, {industry2}, and everything between — compete not just locally but regionally. Winning that competition online requires more than a decent-looking website; it requires technical precision, fast load times, structured data, and content that Google recognizes as genuinely relevant to the {subCity} audience. That's exactly what {agencyName} delivers. Our {service} team has deep experience serving the {city} market and understands the local demand patterns, the nearby landmarks like {landmark}, and the competitive landscape that shapes what it takes to rank here.`,
-
-  // 6 — conversational, founder-to-founder
-  `Running a business in {subCity} is not easy. Between managing the day-to-day and growing your customer base, your digital presence often ends up as an afterthought — until a competitor who invested in it starts taking your leads. That's where {agencyName} steps in. We are a specialist {service} team that works with {city} businesses — from {industry1} operators near {landmark} to growing {industry2} brands — to build the kind of online presence that generates real enquiries. No fluff, no recycled designs. Just clean, fast, locally-optimized web platforms built to last.`,
-
-  // 7 — aspirational, growth-framing
-  `{subCity} has the business density, the consumer demand, and the infrastructure to support ambitious growth. What many local businesses are missing is a digital presence that keeps pace. {agencyName}'s {service} team helps {city}-based brands — across {industry1}, {industry2}, and adjacent sectors — transform their online channels from a passive brochure into an active lead-generation engine. With strategic SEO baked into the architecture, a mobile-first build process, and deep familiarity with the {landmark} commercial corridor, we give {subCity} businesses the digital infrastructure to compete at the next level.`,
-
-  // 8 — data-meets-craft
-  `In {subCity}, as across {city}'s broader {character} market, the gap between a high-performing website and an average one is measurable in thousands of rupees of monthly revenue. {agencyName} closes that gap. We engineer {service} solutions using modern stacks — primarily Next.js and React — that produce 90+ Lighthouse scores and sub-two-second load times across all devices. But speed is just the foundation. We layer on hyper-local SEO structured specifically for {subCity}, leveraging {city}'s search demand patterns near {landmark} and the commercial activity of {industry1} and {industry2} sectors to ensure your platform ranks where it matters most.`,
-
-  // 9 — differentiated, process-led
-  `Our {service} process for {subCity} businesses begins with a question most agencies skip: who is already winning? We conduct a detailed competitor audit, analyze what is ranking in {city} for your target keywords, and reverse-engineer the technical and content gaps. Then we build — from a custom Figma design to a production Next.js codebase, optimized specifically for the search demand near {landmark} and the buying behaviors of {industry1} and {industry2} customers in your area. The result is not just a website; it is a strategic digital asset built to compound its value over time.`,
-
-  // 10 — warm, community-aware
-  `There is something distinctive about doing business in {subCity}. The local customer base — shaped by proximity to {landmark} and the activity of sectors like {industry1} and {industry2} — has specific expectations. They search differently, compare differently, and decide differently. {agencyName} builds {service} solutions that account for this. We do not apply a generic formula; we study the local market, design for local intent, and engineer for the technical standards that Google now enforces. If you want a digital presence that feels native to {subCity} and performs at {city}-wide scale, let's talk.`,
-
-  // 11 — premium, authority-signal
-  `Premium brands in {subCity} do not compromise on their physical spaces — and they should not compromise on their digital ones either. {agencyName} is the {service} partner of choice for businesses in {city}'s most demanding {character} environments, including {industry1} and {industry2} sectors near {landmark}. We build with enterprise-grade rigor: clean TypeScript codebases, automated performance monitoring, structured JSON-LD schema, and mobile-first layouts that maintain pixel-perfect fidelity across every screen size. If your business in {subCity} is serious about growth, your website needs to reflect that seriousness from the very first load.`,
+// Marketing & Search Growth Services (SEO, Digital Marketing, SMM, Branding)
+const MARKETING_INTROS = [
+  `Generating qualified business enquiries in {subCity} requires more than vanity metrics; it requires a structured growth strategy that captures active buyer intent across {city}. At {agencyName}, our {service} team focuses on measurable commercial outcomes: higher organic visibility, lower customer acquisition costs, and consistent lead flow. Serving {industry1} and {industry2} companies near {landmark}, we build predictable growth engines that turn searchers into paying clients.`,
+  `When decision-makers in {subCity} look for reliable partners, they trust companies that dominate search rankings and maintain credible multi-channel presence. {agencyName} provides data-driven {service} designed for {city}'s competitive {character} landscape. We analyze local search volume, reverse-engineer top-ranking competitors near {landmark}, and execute campaigns that compound in authority over time.`,
+  `Marketing without clear attribution is a sunk cost. For businesses operating across {subCity}'s commercial corridors, {agencyName} structures {service} campaigns around transparent metrics: qualified leads, engagement rates, and ROI. Whether scaling local reach for {industry1} operators or running regional acquisition for {industry2} brands in {city}, we provide hands-on campaign execution without outsourced fluff.`,
+  `In {subCity}'s crowded market, positioning is what separates market leaders from commodity vendors. Our {service} programs help {city} businesses articulate their competitive advantage, capture local market share near {landmark}, and build compounding reputation across digital channels.`,
 ];
 
 // ─── H2 Option Sets (8 sets × 3 options) ─────────────────────────────────────
@@ -473,15 +460,15 @@ const H1_POOL = [
  * ─────────────────────────────────────────────────────────────────────────────
  */
 const TITLE_POOL = [
-  `Best {Service} in {subCity}`,
+  `Custom {Service} in {subCity}`,
   `Expert {Service} Agency in {subCity}`,
-  `Custom {Service} for {subCity}`,
+  `Professional {Service} for {subCity}`,
   `{Service} in {subCity} — Built to Rank`,
   `Professional {Service} in {subCity}`,
   `{Service} Company in {subCity}`,
   `Trusted {Service} Partner in {subCity}`,
   `{subCity} {Service} — Built to Convert`,
-  `Top-Rated {Service} in {subCity}`,
+  `High-Performance {Service} in {subCity}`,
   `{Service} Solutions for {subCity}`,
 ];
 
@@ -814,8 +801,15 @@ export function generateFallbackAreaData(city: string, subCity: string, serviceT
     yearsExperience: String(SITE.yearsExperience),
   };
 
-  // ── Intro ─────────────────────────────────────────────────────────────────
-  const intro = fill(INTROS[(hash >>> 0) % INTROS.length], vars);
+  // ── Intro Selection: Category-Aware ───────────────────────────────────────
+  const svcLower = serviceTitle.toLowerCase();
+  let introPool = DEV_INTROS;
+  if (/video|photo|graphic|design|creative|ui|ux/.test(svcLower)) {
+    introPool = CREATIVE_INTROS;
+  } else if (/seo|marketing|social|brand|content/.test(svcLower)) {
+    introPool = MARKETING_INTROS;
+  }
+  const intro = fill(introPool[(hash >>> 0) % introPool.length], vars);
 
   // ── H2 headings ──────────────────────────────────────────────────────────
   const h2Set = H2_SETS[(hash >>> 0) % H2_SETS.length];
@@ -855,7 +849,6 @@ export function generateFallbackAreaData(city: string, subCity: string, serviceT
 
   // ── FAQs — service-category-aware routing ────────────────────────────────
   // Determine which FAQ bands are appropriate for this service type
-  const svcLower = serviceTitle.toLowerCase();
   let faqCandidateIndices: number[];
   if (/seo|search|rank/.test(svcLower)) {
     faqCandidateIndices = [0, 2, 6, 11]; // timeline/SEO, B2B/lead-gen, performance, ROI

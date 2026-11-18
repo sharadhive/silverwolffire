@@ -100,6 +100,13 @@ export default function HrManagementPage() {
         product={product}
         faqs={HR_FAQS}
         comparison={HR_COMPARISON}
+        crossLink={{
+          badge: "Enterprise Business Systems",
+          title: "Looking for Custom Operations Software & CRM Development?",
+          description: "If your organization requires bespoke operations software, biometric hardware integrations, or automated sales and employee workflows, our engineering team builds custom web and mobile platforms tailored to your business.",
+          href: "/services/crm-development",
+          cta: "View Custom Business Systems Development",
+        }}
       />
     </>
   );

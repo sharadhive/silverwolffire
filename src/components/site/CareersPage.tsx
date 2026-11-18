@@ -834,7 +834,7 @@ export const CareersPage = () => {
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="+91 93160 28350"
+                      placeholder="e.g. +91 98765 43210"
                       value={phone}
                       onChange={(e) => setPhone(e.target.value)}
                       className="bg-white border border-slate-200 rounded-xl text-sm text-foreground placeholder:text-muted-foreground/50 focus:border-primary focus:ring-1 focus:ring-primary focus-visible:ring-0 focus-visible:ring-offset-0 transition-all duration-200"
