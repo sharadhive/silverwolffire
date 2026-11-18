@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
-import { SERVICES, cityFromSlug, subCityFromSlug, SITE, citySlug } from "@/data/site";
-import { getAreaData } from "@/lib/locationData";
-import { isLocalityIndexable } from "@/lib/curatedCities";
+import { SERVICES, cityFromSlug, subCityFromSlug, SITE, citySlug } from "../data/site";
+import { getAreaData } from "./locationData";
+import { isLocalityIndexable } from "./curatedCities";
 
 // ─── City-level title pool (intent-first, no unverified superlatives) ───────
 const CITY_TITLE_POOL = [

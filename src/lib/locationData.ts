@@ -1,8 +1,8 @@
-import { chennaiData } from "@/data/locations/chennai";
-import { mumbaiData } from "@/data/locations/mumbai";
-import { AreaData, CityData } from "@/data/locations/types";
-import { generateFallbackAreaData } from "@/lib/contentGenerator";
-import { cityFromSlug, subCityFromSlug } from "@/data/site";
+import { chennaiData } from "../data/locations/chennai";
+import { mumbaiData } from "../data/locations/mumbai";
+import { AreaData, CityData } from "../data/locations/types";
+import { generateFallbackAreaData } from "./contentGenerator";
+import { cityFromSlug, subCityFromSlug } from "../data/site";
 
 /**
  * Cities with real hand-written locality content.

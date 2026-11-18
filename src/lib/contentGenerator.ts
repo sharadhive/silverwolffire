@@ -1,5 +1,5 @@
-import { AreaData } from "@/data/locations/types";
-import { SITE, SUB_CITIES } from "@/data/site";
+import { AreaData } from "../data/locations/types";
+import { SITE, SUB_CITIES } from "../data/site";
 
 // ─── City Context Database ────────────────────────────────────────────────────
 // Provides area-type hints so intros feel locally researched.
