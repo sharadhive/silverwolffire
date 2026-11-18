@@ -10,7 +10,7 @@ import {
   ArrowRight, Sparkles, Send, ShieldCheck, Zap, Code2, Smartphone,
   Cpu, Cloud, TrendingUp, Palette, CheckCircle2, Terminal, Activity,
   Globe, ChevronRight, Layers, ArrowUpRight, Phone, MessageCircle,
-  GraduationCap, Users, LayoutDashboard
+  GraduationCap, Users, LayoutDashboard, Briefcase, Clock
 } from "lucide-react";
 import { z } from "zod";
 import { toast } from "sonner";
@@ -326,11 +326,15 @@ export const Hero = () => {
                       className="mt-1 w-full h-8.5 rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs text-slate-900 focus:bg-white"
                     >
                       <option value="LMS System">LMS Platform</option>
-                      <option value="CRM Platform">Custom CRM</option>
+                      <option value="CRM Platform">Custom CRM Platform</option>
                       <option value="HR Management Platform">HR & Attendance Portal</option>
+                      <option value="Job & Recruitment Portal">Job & Recruitment Portal</option>
+                      <option value="Photo & Location Attendance">Photo & Location Attendance</option>
+                      <option value="Custom LMS Development">Custom LMS Development</option>
                       <option value="Website Development">Web Development</option>
                       <option value="SEO Services">Technical SEO & Growth</option>
                       <option value="Mobile App Development">Mobile App Development</option>
+                      <option value="Custom Software & Automation">Custom Software & Automation</option>
                     </select>
                   </div>
                 </div>
@@ -399,34 +403,61 @@ export const Hero = () => {
             <BentoShowcaseCard
               icon={GraduationCap}
               title="LMS Platform"
-              short="Custom Learning Management System with quizzes, student portals, certificates, and live class support."
+              short="Turnkey course delivery platform with DRM video streaming, timed quizzes, student portals, and automated certificates."
               slug="/products/lms"
               span="lg:col-span-4"
               gradient="from-indigo-500 via-primary to-purple-500"
-              badge="Platform Offering"
+              badge="Ready Platform"
             />
             <BentoShowcaseCard
               icon={LayoutDashboard}
               title="Custom CRM Platform"
-              short="Bespoke sales pipelines, automated WhatsApp lead routing, and customer history without per-seat fees."
+              short="Bespoke sales pipelines, automated WhatsApp lead routing, quotation workflows, and client history with zero per-seat fees."
               slug="/products/crm"
               span="lg:col-span-4"
               gradient="from-blue-500 via-cyan-500 to-indigo-500"
-              badge="Platform Offering"
+              badge="Ready Platform"
             />
             <BentoShowcaseCard
               icon={Users}
-              title="HR & Attendance Portal"
-              short="Unified employee records, real-time geolocation attendance, leave workflows, and payroll-ready exports."
+              title="HR & Workforce Portal"
+              short="Unified employee directory, multi-tier leave approval chains, document vaults, and payroll-ready timesheet exports."
               slug="/products/hr-management"
               span="lg:col-span-4"
               gradient="from-emerald-500 via-teal-500 to-indigo-500"
-              badge="Platform Offering"
+              badge="Ready Platform"
+            />
+            <BentoShowcaseCard
+              icon={Briefcase}
+              title="Recruitment & Job Portal"
+              short="Custom job board platform with candidate resume ingestion, employer applicant tracking, and skill-based matching."
+              slug="/products/job-portal"
+              span="lg:col-span-4"
+              gradient="from-amber-500 via-orange-500 to-primary"
+              badge="Ready Platform"
+            />
+            <BentoShowcaseCard
+              icon={Clock}
+              title="Photo & Geolocation Attendance"
+              short="Smartphone attendance tracking with selfie photo verification, GPS radius geofencing, shift rosters, and payroll sync."
+              slug="/products/attendance-system"
+              span="lg:col-span-4"
+              gradient="from-teal-500 via-emerald-500 to-cyan-500"
+              badge="Ready Platform"
+            />
+            <BentoShowcaseCard
+              icon={GraduationCap}
+              title="Custom LMS Development"
+              short="Bespoke e-learning engineering for universities & coaching chains with custom proctoring, SIS sync, and 3 months free support."
+              slug="/services/lms-development"
+              span="lg:col-span-4"
+              gradient="from-purple-500 via-indigo-500 to-blue-500"
+              badge="Custom Engineering"
             />
             <BentoShowcaseCard
               icon={Code2}
               title="Web Development"
-              short="High-performance web apps built with Next.js, React, and serverless edge computing."
+              short="High-performance web apps, scalable portals, and enterprise platforms built with Next.js, React, and Node.js."
               slug="website-development"
               span="lg:col-span-4"
               gradient="from-purple-500 via-pink-500 to-indigo-500"
@@ -435,7 +466,7 @@ export const Hero = () => {
             <BentoShowcaseCard
               icon={TrendingUp}
               title="Digital Marketing & SEO"
-              short="Data-driven search dominance, multi-channel performance ads, and organic funnel acceleration."
+              short="Technical SEO dominance, high-intent Google search growth, performance ad campaigns, and organic funnel acceleration."
               slug="seo-services"
               span="lg:col-span-4"
               gradient="from-indigo-500 via-purple-500 to-emerald-500"
@@ -444,10 +475,10 @@ export const Hero = () => {
             <BentoShowcaseCard
               icon={Smartphone}
               title="Mobile Apps & SaaS"
-              short="Cross-platform iOS & Android mobile applications and cloud-native SaaS systems engineered to scale."
+              short="Cross-platform iOS & Android mobile applications and cloud-native SaaS systems engineered for high concurrency."
               slug="mobile-app-development"
               span="lg:col-span-4"
-              gradient="from-purple-500 via-indigo-500 to-blue-500"
+              gradient="from-cyan-500 via-blue-500 to-indigo-500"
               badge="Core Service"
             />
           </div>

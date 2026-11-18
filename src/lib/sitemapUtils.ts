@@ -60,21 +60,24 @@ export function escapeXml(str: string): string {
 
 // ─── URL Generators ──────────────────────────────────────────────────────────
 
-/** Core static pages — homepage, about, services index, portfolio, locations, contact, careers, privacy, terms */
+/** Core static pages — homepage, about, services index, portfolio, locations, contact, careers, platforms, privacy, terms */
 export function getCorePageUrls(): SitemapUrl[] {
   return [
-    { loc: `${BASE_URL}/`,               lastmod: STABLE_CORE_LASTMOD },
-    { loc: `${BASE_URL}/about`,          lastmod: STABLE_CORE_LASTMOD },
-    { loc: `${BASE_URL}/services`,       lastmod: STABLE_CORE_LASTMOD },
-    { loc: `${BASE_URL}/portfolio`,      lastmod: STABLE_CORE_LASTMOD },
-    { loc: `${BASE_URL}/locations`,      lastmod: STABLE_CORE_LASTMOD },
-    { loc: `${BASE_URL}/contact`,        lastmod: STABLE_CORE_LASTMOD },
-    { loc: `${BASE_URL}/careers`,        lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/`,                       lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/about`,                  lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/services`,               lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/portfolio`,              lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/locations`,              lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/contact`,                lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/careers`,                lastmod: STABLE_CORE_LASTMOD },
     { loc: `${BASE_URL}/products/lms`,           lastmod: STABLE_CORE_LASTMOD },
     { loc: `${BASE_URL}/products/crm`,           lastmod: STABLE_CORE_LASTMOD },
     { loc: `${BASE_URL}/products/hr-management`, lastmod: STABLE_CORE_LASTMOD },
-    { loc: `${BASE_URL}/privacy-policy`, lastmod: STABLE_CORE_LASTMOD },
-    { loc: `${BASE_URL}/terms`,          lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/products/job-portal`,    lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/products/attendance-system`, lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/services/lms-development`,   lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/privacy-policy`,         lastmod: STABLE_CORE_LASTMOD },
+    { loc: `${BASE_URL}/terms`,                  lastmod: STABLE_CORE_LASTMOD },
   ];
 }
 

@@ -149,7 +149,7 @@ for (const p of corePages) {
   });
 }
 
-// 2. Product Platforms (3)
+// 2. Product Platforms (5)
 const productPages = [
   {
     slug: 'lms',
@@ -171,6 +171,20 @@ const productPages = [
     desc: 'Custom HR operations, attendance tracking, and leave management portal for growing companies in India. Real-time check-ins, leave approval workflows, and payroll-ready exports without per-employee SaaS fees.',
     h1: 'Unified Employee Operations, Attendance Tracking & Leave Management',
     source: 'src/app/products/hr-management/page.tsx',
+  },
+  {
+    slug: 'job-portal',
+    title: 'Custom Job Board & Recruitment Portal Software | Silver Wolf Technologies',
+    desc: 'High-performance recruitment portal and applicant tracking software with candidate profiles, resume ingestion, employer pipelines, and zero monthly SaaS seat fees.',
+    h1: 'Scalable Recruitment Portal & Job Board Platform Built for High-Volume Hiring',
+    source: 'src/app/products/job-portal/page.tsx',
+  },
+  {
+    slug: 'attendance-system',
+    title: 'Photo & Location Attendance Software | Silver Wolf Technologies India',
+    desc: 'Real-time selfie photo verification and GPS geolocation-radius check-ins for field teams, retail outlets, and multi-branch companies without biometric hardware costs.',
+    h1: 'Location & Photo-Verified Attendance Software Built for Distributed Teams',
+    source: 'src/app/products/attendance-system/page.tsx',
   },
 ];
 
@@ -198,6 +212,33 @@ for (const prod of productPages) {
     checked_environment: 'local_build (SSG)',
     checked_at: CHECKED_AT,
     issue: 'New product page; validated locally, pending Vercel deployment publish',
+  });
+}
+
+// 2b. Dedicated Specialized Service Page: Custom LMS Development (1)
+{
+  const lmsDevPolicy = evaluateUrlPolicy('/services/lms-development');
+  rows.push({
+    url: `${SITE.domain}/services/lms-development`,
+    page_type: 'dedicated_service_page',
+    service: 'lms-development',
+    city: 'All / Hub',
+    locality: 'None',
+    content_source: 'src/app/services/lms-development/page.tsx',
+    index_policy: lmsDevPolicy.isRobotsIndexable ? 'INDEX' : 'NOINDEX',
+    sitemap_included: lmsDevPolicy.isSitemapEligible ? 'yes (core-pages.xml)' : 'no',
+    expected_canonical: `${SITE.domain}/services/lms-development`,
+    source_title: 'Custom LMS Development Company India | Bespoke E-Learning Portals | Silver Wolf Technologies',
+    source_description: 'Custom LMS development services for coaching institutes, universities, and enterprises in India. Exam proctoring, DRM video protection, SCORM compliance, and 3 months free maintenance.',
+    source_H1_if_available: 'Custom LMS Development for Coaching Institutes, EdTech & Enterprise Training',
+    render_checked: 'yes',
+    rendered_title: 'Custom LMS Development Company India | Bespoke E-Learning Portals | Silver Wolf Technologies',
+    rendered_description: 'Custom LMS development services for coaching institutes, universities, and enterprises in India. Exam proctoring, DRM video protection, SCORM compliance, and 3 months free maintenance.',
+    rendered_H1: 'Custom LMS Development for Coaching Institutes, EdTech & Enterprise Training',
+    HTTP_status: '200 OK local (pending production deployment)',
+    checked_environment: 'local_build (SSG)',
+    checked_at: CHECKED_AT,
+    issue: 'Dedicated custom service page avoiding locality multiplier bloat; cross-linked with /products/lms',
   });
 }
 
@@ -390,7 +431,8 @@ const csvLines = [
 ];
 
 fs.writeFileSync('PAGE-INVENTORY.csv', csvLines.join('\n'), 'utf8');
-console.log(`Generated complete PAGE-INVENTORY.csv with ${rows.length} rows.`);
+fs.writeFileSync('UPDATED-PAGE-INVENTORY.csv', csvLines.join('\n'), 'utf8');
+console.log(`Generated complete PAGE-INVENTORY.csv and UPDATED-PAGE-INVENTORY.csv with ${rows.length} rows.`);
 
 // Validation summary
 const indexableCount = rows.filter((r) => r.index_policy === 'INDEX').length;

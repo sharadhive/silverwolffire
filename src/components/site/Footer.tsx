@@ -146,10 +146,10 @@ export const Footer = () => {
         </div>
 
         {/* ===== MAIN FOOTER LINKS GRID ===== */}
-        <div className="grid lg:grid-cols-5 md:grid-cols-2 gap-10 mb-14">
+        <div className="grid lg:grid-cols-12 md:grid-cols-2 gap-8 lg:gap-6 mb-14">
           
           {/* Brand Info Column */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-4 md:col-span-2 space-y-6 pr-0 lg:pr-4">
             <Link href="/" className="inline-flex items-center gap-3 group">
               <img
                 src={logo.src}
@@ -166,7 +166,7 @@ export const Footer = () => {
             </Link>
 
             <p className="text-sm text-muted-foreground leading-relaxed max-w-sm font-normal">
-              A senior team with 10+ years of combined experience building websites, apps, CRMs and growth systems for ambitious brands worldwide.
+              A senior engineering team with 10+ years of combined experience building websites, apps, CRMs, LMS platforms and custom business automation systems.
             </p>
 
             <div className="space-y-2.5 pt-1">
@@ -200,12 +200,51 @@ export const Footer = () => {
             </div>
           </div>
 
+          {/* Software Platforms Column */}
+          <div className="lg:col-span-2">
+            <h4 className="font-bold mb-4 text-sm uppercase tracking-wider text-slate-900 border-l-2 border-primary pl-3">
+              Platforms
+            </h4>
+            <ul className="space-y-2.5 text-sm font-medium">
+              <li>
+                <Link href="/products/lms" className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1 group">
+                  <span className="group-hover:translate-x-1 transition-transform">LMS Platform</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/services/lms-development" className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1 group">
+                  <span className="group-hover:translate-x-1 transition-transform">Custom LMS Dev</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/products/crm" className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1 group">
+                  <span className="group-hover:translate-x-1 transition-transform">CRM Platform</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/products/hr-management" className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1 group">
+                  <span className="group-hover:translate-x-1 transition-transform">HR Management</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/products/job-portal" className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1 group">
+                  <span className="group-hover:translate-x-1 transition-transform">Job Portal Software</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/products/attendance-system" className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1 group">
+                  <span className="group-hover:translate-x-1 transition-transform">Attendance System</span>
+                </Link>
+              </li>
+            </ul>
+          </div>
+
           {/* Development Services Column */}
-          <div>
-            <h4 className="font-bold mb-5 text-sm uppercase tracking-wider text-slate-900 border-l-2 border-primary pl-3">
+          <div className="lg:col-span-2">
+            <h4 className="font-bold mb-4 text-sm uppercase tracking-wider text-slate-900 border-l-2 border-primary pl-3">
               Development
             </h4>
-            <ul className="space-y-3 text-sm font-medium">
+            <ul className="space-y-2.5 text-sm font-medium">
               {dev.map((s) => (
                 <li key={s.slug}>
                   <Link
@@ -220,11 +259,11 @@ export const Footer = () => {
           </div>
 
           {/* Marketing Column */}
-          <div>
-            <h4 className="font-bold mb-5 text-sm uppercase tracking-wider text-slate-900 border-l-2 border-primary pl-3">
+          <div className="lg:col-span-2">
+            <h4 className="font-bold mb-4 text-sm uppercase tracking-wider text-slate-900 border-l-2 border-primary pl-3">
               Marketing & Growth
             </h4>
-            <ul className="space-y-3 text-sm font-medium">
+            <ul className="space-y-2.5 text-sm font-medium">
               {mkt.map((s) => (
                 <li key={s.slug}>
                   <Link
@@ -239,25 +278,17 @@ export const Footer = () => {
           </div>
 
           {/* Creative & Company Column */}
-          <div>
-            <h4 className="font-bold mb-5 text-sm uppercase tracking-wider text-slate-900 border-l-2 border-primary pl-3">
-              Creative & Company
+          <div className="lg:col-span-2">
+            <h4 className="font-bold mb-4 text-sm uppercase tracking-wider text-slate-900 border-l-2 border-primary pl-3">
+              Company
             </h4>
-            <ul className="space-y-3 text-sm font-medium">
-              {creative.map((s) => (
-                <li key={s.slug}>
-                  <Link
-                    href={`/services/${s.slug}`}
-                    className="text-muted-foreground hover:text-primary transition-colors inline-flex items-center gap-1 group"
-                  >
-                    <span className="group-hover:translate-x-1 transition-transform">{s.title}</span>
-                  </Link>
-                </li>
-              ))}
+            <ul className="space-y-2.5 text-sm font-medium">
               <li><Link href="/about" className="text-muted-foreground hover:text-primary transition-colors">About Us</Link></li>
               <li><Link href="/portfolio" className="text-muted-foreground hover:text-primary transition-colors">Our Portfolio</Link></li>
               <li><Link href="/careers" className="text-muted-foreground hover:text-primary transition-colors">Careers & Openings</Link></li>
               <li><Link href="/contact" className="text-muted-foreground hover:text-primary transition-colors">Contact Us</Link></li>
+              <li><Link href="/services/ui-ux-design" className="text-muted-foreground hover:text-primary transition-colors">UI/UX Design</Link></li>
+              <li><Link href="/services/branding-strategy" className="text-muted-foreground hover:text-primary transition-colors">Branding Strategy</Link></li>
             </ul>
           </div>
         </div>

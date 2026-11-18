@@ -1,13 +1,13 @@
 'use client';
 
-import { Shield, Zap, Globe, HeartHandshake, LucideIcon } from "lucide-react";
+import { Shield, Zap, Globe, HeartHandshake, FileCheck, DollarSign, LucideIcon } from "lucide-react";
 import { use3DTilt } from "@/hooks/use3DTilt";
 
 const reasons = [
-  { icon: Zap, title: "Lightning Delivery", desc: "Most websites ship in 2–4 weeks. Sprint-based execution with weekly demos." },
-  { icon: Shield, title: "Production-Grade Code", desc: "Clean, scalable, well-documented codebases you can hand to any team." },
-  { icon: Globe, title: "India + Global Reach", desc: "Seamless collaboration across IST, EST, GMT and AEST timezones." },
-  { icon: HeartHandshake, title: "Founder-Led Service", desc: "Senior strategists in every meeting — never juniors, never call-centers." },
+  { icon: Zap, title: "Lightning Delivery", desc: "Sprint-based execution with weekly demos. Turnkey platforms deploy in days; custom builds ship in 2–6 weeks." },
+  { icon: FileCheck, title: "3 Months Free Support", desc: "Every custom build includes 90 days of free post-launch maintenance, bug triage, and performance tuning." },
+  { icon: Shield, title: "100% Code & IP Ownership", desc: "Clean, documented codebases hosted in your cloud with zero recurring monthly per-seat licensing fees." },
+  { icon: Globe, title: "India + Global Delivery", desc: "HQ in Murbad, India with seamless collaboration across IST, GMT, EST, and AEST timezones." },
 ];
 
 const Feature3DCard = ({ icon: Icon, title, desc, className = "" }: { icon: LucideIcon; title: string; desc: string; className?: string }) => {
@@ -53,12 +53,25 @@ export const WhyUs = () => (
             We're not a freelancer marketplace. We're a tight, senior team obsessed with shipping
             measurable outcomes — traffic, leads, revenue.
           </p>
-          <div className="glass rounded-3xl p-7 border border-slate-200/80 shadow-sm">
-            <div className="flex items-baseline gap-3 mb-2">
-              <span className="text-4xl md:text-5xl font-bold text-gradient-primary">100%</span>
-              <span className="text-sm font-semibold text-slate-700">Code & IP Ownership</span>
+          <div className="grid sm:grid-cols-2 gap-4 mt-6">
+            <div className="glass rounded-2xl p-5 border border-slate-200/80 shadow-sm">
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-3xl font-extrabold text-gradient-primary">3 Mo.</span>
+                <span className="text-xs font-bold text-slate-800">Free Maintenance</span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Post-launch bug triage, performance tuning, and minor tweaks included in every custom proposal.
+              </p>
             </div>
-            <p className="text-sm text-muted-foreground">Production Next.js, React, and Node.js codebases with zero recurring per-user software licensing overhead.</p>
+            <div className="glass rounded-2xl p-5 border border-slate-200/80 shadow-sm">
+              <div className="flex items-baseline gap-2 mb-1">
+                <span className="text-3xl font-extrabold text-emerald-600">~50%</span>
+                <span className="text-xs font-bold text-slate-800">Cost Advantage</span>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                High-value engineering without bloated agency overhead or perpetual per-seat SaaS license fees.
+              </p>
+            </div>
           </div>
         </div>
 

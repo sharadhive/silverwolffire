@@ -5,7 +5,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Menu, X, ChevronDown, Sparkles, ArrowRight, Code2, Megaphone,
-  Palette, Phone, MessageCircle, Layers, GraduationCap, Users, LayoutDashboard
+  Palette, Phone, MessageCircle, Layers, GraduationCap, Users, LayoutDashboard,
+  Briefcase, Clock
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import logo from "@/assets/logo.png";
@@ -24,6 +25,8 @@ const PLATFORM_ICONS: Record<string, React.ComponentType<{ className?: string }>
   lms: GraduationCap,
   crm: LayoutDashboard,
   "hr-management": Users,
+  "job-portal": Briefcase,
+  "attendance-system": Clock,
 };
 
 const grouped = {

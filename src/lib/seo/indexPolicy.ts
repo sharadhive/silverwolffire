@@ -146,11 +146,13 @@ export function evaluateUrlPolicy(pathname: string): UrlPolicyResult {
     };
   }
 
-  // Proprietary Platform Product pages (LMS, CRM, HR Management)
+  // Proprietary Platform Product pages (LMS, CRM, HR Management, Job Portal, Attendance System)
   if (
     clean === "/products/lms" ||
     clean === "/products/crm" ||
-    clean === "/products/hr-management"
+    clean === "/products/hr-management" ||
+    clean === "/products/job-portal" ||
+    clean === "/products/attendance-system"
   ) {
     return {
       decision: "INDEX",

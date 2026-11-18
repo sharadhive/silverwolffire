@@ -101,11 +101,11 @@ export default function LmsPage() {
         faqs={LMS_FAQS}
         comparison={LMS_COMPARISON}
         crossLink={{
-          badge: "Custom SaaS & Web Engineering",
-          title: "Need Custom EdTech Engineering or Scalable SaaS Architecture?",
-          description: "Beyond standalone LMS deployments, our engineering team builds custom student information portals, high-concurrency exam engines, and multi-tenant ed-tech platforms on Next.js and React.",
-          href: "/services/saas-development",
-          cta: "Explore SaaS & Web App Development",
+          badge: "Bespoke EdTech Engineering",
+          title: "Need Custom LMS Development or Proprietary E-Learning Architecture?",
+          description: "If your institution requires custom exam proctoring algorithms, deep university ERP/SIS database integrations, multi-tenant white-label portals, or custom offline video player apps, explore our bespoke LMS development services.",
+          href: "/services/lms-development",
+          cta: "View Custom LMS Development Services",
         }}
       />
     </>

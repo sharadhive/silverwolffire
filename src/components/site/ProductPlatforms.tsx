@@ -4,7 +4,8 @@ import { useState } from 'react';
 import Link from 'next/link';
 import {
   GraduationCap, LayoutDashboard, Users, CheckCircle2, ArrowRight,
-  Sparkles, ExternalLink, ShieldCheck, Zap, MessageCircle, Phone
+  Sparkles, ExternalLink, ShieldCheck, Zap, MessageCircle, Phone,
+  Briefcase, Clock
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SITE, PRODUCT_PLATFORMS, ProductPlatform } from '@/data/site';
@@ -14,6 +15,8 @@ const PLATFORM_ICONS: Record<string, React.ComponentType<{ className?: string }>
   lms: GraduationCap,
   crm: LayoutDashboard,
   'hr-management': Users,
+  'job-portal': Briefcase,
+  'attendance-system': Clock,
 };
 
 export const ProductPlatforms = () => {

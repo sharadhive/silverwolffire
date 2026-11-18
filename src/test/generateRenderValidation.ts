@@ -121,10 +121,13 @@ export function runValidation() {
     { rel: 'privacy-policy.html', url: 'https://www.silverwolftechnologies.in/privacy-policy', type: 'legal_privacy' },
     { rel: 'terms.html', url: 'https://www.silverwolftechnologies.in/terms', type: 'legal_terms' },
 
-    // Product Slices
+    // Product Slices & Dedicated Services
     { rel: 'products/lms.html', url: 'https://www.silverwolftechnologies.in/products/lms', type: 'product_lms' },
     { rel: 'products/crm.html', url: 'https://www.silverwolftechnologies.in/products/crm', type: 'product_crm' },
     { rel: 'products/hr-management.html', url: 'https://www.silverwolftechnologies.in/products/hr-management', type: 'product_hr' },
+    { rel: 'products/job-portal.html', url: 'https://www.silverwolftechnologies.in/products/job-portal', type: 'product_job_portal' },
+    { rel: 'products/attendance-system.html', url: 'https://www.silverwolftechnologies.in/products/attendance-system', type: 'product_attendance' },
+    { rel: 'services/lms-development.html', url: 'https://www.silverwolftechnologies.in/services/lms-development', type: 'dedicated_service_lms' },
 
     // All 14 Services
     { rel: 'services/website-development.html', url: 'https://www.silverwolftechnologies.in/services/website-development', type: 'service_detail' },
